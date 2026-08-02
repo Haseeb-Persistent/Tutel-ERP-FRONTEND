@@ -1,0 +1,264 @@
+.dashboard-container {
+  padding: 24px 30px;
+  background: #f8f9fc;
+  min-height: 100vh;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.page-title {
+  font-weight: 700;
+  color: #1a2332;
+  margin-bottom: 4px;
+  font-size: 24px;
+}
+
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumb-item a {
+  color: #6c7a8a;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.breadcrumb-item.active {
+  color: #4B49AC;
+  font-weight: 500;
+}
+
+/* Stat Cards */
+.stat-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+
+
+.stat-card-body {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #8a94a6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a2332;
+  margin: 6px 0 4px;
+}
+
+.stat-trend {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--primary);
+}
+
+
+.stat-progress {
+  height: 4px;
+  background: #eef0f5;
+}
+
+.stat-progress .progress-bar {
+  height: 100%;
+  border-radius: 0 2px 2px 0;
+  transition: width 1s ease;
+}
+
+.stat-card-primary .stat-progress .progress-bar {
+  background: #4B49AC;
+}
+.stat-card-success .stat-progress .progress-bar {
+  background: #34d399;
+}
+.stat-card-warning .stat-progress .progress-bar {
+  background: #fbbf24;
+}
+.stat-card-info .stat-progress .progress-bar {
+  background: #4facfe;
+}
+/* Chart Cards */
+.chart-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.chart-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #eef0f5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chart-title {
+  font-weight: 600;
+  color: #1a2332;
+  margin: 0;
+  font-size: 16px;
+}
+
+.chart-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.chart-actions .btn {
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+
+.chart-actions .btn.active {
+  background: #4B49AC;
+  color: #fff;
+  border-color: #4B49AC;
+}
+
+.chart-badge {
+  background: #eef0ff;
+  color: #4B49AC;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.chart-body {
+  padding: 8px 12px 0;
+}
+
+/* Table Cards */
+.table-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #eef0f5;
+}
+
+.table-title {
+  font-weight: 600;
+  color: #1a2332;
+  margin: 0;
+  font-size: 16px;
+}
+
+.table-body {
+  padding: 0 4px;
+  overflow-x: auto;
+}
+
+.table {
+  margin: 0;
+}
+
+.table thead th {
+  background: #f8f9fc;
+  color: #6c7a8a;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  padding: 12px 16px;
+  border-bottom: 2px solid #eef0f5;
+}
+
+.table tbody td {
+  padding: 12px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f2f5;
+  font-size: 14px;
+}
+
+.table tbody tr:hover {
+  background: #f8f9fc;
+}
+
+.progress-table {
+  display: flex;
+  align-items: center;
+}
+
+.progress-table .progress {
+  flex: 1;
+  min-width: 60px;
+}
+
+.badge {
+  padding: 6px 12px;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+/* Dashboard Footer */
+.dashboard-footer {
+  margin-top: 32px;
+  padding: 20px 0 0;
+  border-top: 1px solid #eef0f5;
+  text-align: center;
+}
+
+.dashboard-footer p {
+  color: #8a94a6;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .stat-value {
+    font-size: 22px;
+  }
+  
+  .chart-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}

@@ -1,1 +1,365 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+    /* Primary Brand Colors */
+    --primary: #024D8A;      /* Professional Blue */
+    --secondary: #1e293b;    /* Dark Slate */
+    --accent: #4f46e5;       /* Indigo */
+
+    /* Status Colors */
+    --success: #10b981;      /* Emerald */
+    --info: #0ea5e9;         /* Sky Blue */
+    --warning: #f59e0b;      /* Amber */
+    --danger: #ef4444;       /* Red */
+
+    /* Neutral Colors */
+    --white: #ffffff;
+    --light: #f8fafc;
+    --lighter: #f1f5f9;
+    --gray: #64748b;
+    --gray-dark: #334155;
+    --dark: #0f172a;
+
+    /* Extra Colors */
+    --blue: #3b82f6;
+    --indigo: #4f46e5;
+    --purple: #7c3aed;
+    --pink: #ec4899;
+    --red: #ef4444;
+    --orange: #f97316;
+    --yellow: #eab308;
+    --green: #10b981;
+    --teal: #14b8a6;
+    --cyan: #06b6d4;
+
+    /* Responsive */
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-xxl: 1540px;
+    /* Sidebar specific */
+    --sidebar-width: 263px;
+    --sidebar-bg: #ffffff;
+    --sidebar-text: #1a1a2e;
+    --sidebar-hover: #eef1ff;
+    --sidebar-active: #024D8A;
+    --sidebar-active-text: #ffffff;
+    font-family: "Roboto", "Roboto", sans-serif;
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Roboto', sans-serif;
+    
+}
+body {
+    margin: 0;
+    /* font-family: Roboto, sans-serif, "Helvetica Neue", Arial, "Noto Sans", sans-serif; */
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #526484;
+    text-align: left;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f1f4fa;
+}
+
+a{
+    cursor:pointer;
+}
+.form-group {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+
+
+textarea.form-control {
+  min-height: calc(2.5rem + 2px) !important;
+}
+
+
+
+  .form-control:focus {
+    box-shadow: none !important;
+    border: 2px solid #074888 !important;
+  }
+
+.form-control-child {
+  border-right: none !important;
+}
+
+
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #344357;
+    margin-bottom: .5rem;
+}
+input::placeholder {
+  color: #BDBDBD !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  font-family: Roboto !important;
+}
+
+textarea::placeholder {
+  color: #BDBDBD !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  font-family: Roboto !important;
+}
+.form-control {
+    color: #121212;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: Roboto;
+}
+.form-control {
+    border-radius: 4px;
+    padding: 0px 10px 0px 10px;
+    border: 1px solid #858C94 !important;
+}
+.form-control {
+    display: block;
+    width: 100%;
+    height: calc(2.500rem + 2px);
+    padding: 0.4375rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+    color: #3c4d62;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #dbdfea;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+select.form-control {
+    appearance: none !important;
+    background-repeat: no-repeat;
+    background-position: right 0.50rem center;
+    background-size: 26px 26px;
+}
+.form-group:last-child {
+    margin-bottom: 0;
+}
+.form-group {
+    position: relative;
+    margin-bottom: 1.25rem;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.input-group-append {
+    margin-left: -1px;
+}
+.code-block + .code-block {
+    margin-top: 19px;
+}
+.code-block {
+    position: relative;
+    border: none;
+    padding: 1.25rem;
+    margin: 30px 30px 0px 30px;
+    background: #fff;
+    border-radius: 10px;
+}
+/* Alert css started */
+.section {
+    margin-top: 1.9px;
+    position: relative;
+  }
+  
+  .Alert-Text {
+    color: #FFFFFF;
+    /*display: block;
+    margin: auto;*/
+    margin-left: 20px;
+    margin-top: 5px;
+    font-size: 22px;
+    font-weight: 900;
+    font-family: Roboto;
+  }
+  
+  .Alert-Text-Center {
+    color: #FFFFFF;
+    display: block;
+    font-size: 22px;
+    font-weight: 900;
+    font-family: Roboto;
+    margin-left: 5%;
+    margin-top: 3%;
+  }
+  
+  .section-content {
+    background-color: var( --primary);
+    width: 100%;
+    height: 50px;
+    border-radius: 8px 8px 0px 0px;
+    display: flex;
+    Margin-top: -40px;
+  }
+  
+  .DisclaimerBodyContent {
+    width: 100%;
+    border-radius: 0px 0px 8px 8px;
+  }
+  
+  .DisclaimerBodyContent {
+    background-color: #FFFFFF;
+    padding: 15px;
+  }
+  
+    .DisclaimerBodyContent h3 {
+      color: var( --primary);
+      font-size: 24px;
+      font-weight: 600;
+    }
+  
+    .DisclaimerBodyContent p {
+      font-size: 14px;
+      color: #4F4F4F;
+      font-weight: 400;
+      font-family: Roboto;
+    }
+  /* Form css started */
+  
+  .Alert-section-back {
+    background-color: #F2F2F2;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    background: #CCCCCC;
+    box-sizing: border-box;
+    border-radius: 22px;
+    fill: var(--Gray-6, #F2F2F2);
+    filter: drop-shadow(0px 0px 5.217px rgba(0, 0, 0, 0.10));
+  }
+  /* Form css ended */
+  
+  .buttonProceed {
+    background-color: var( --primary);
+    color: #FFFFFF;
+    border-radius: 3px;
+    width: 100%;
+    height: 42px;
+    border-style: none;
+    font-size: 16px;
+    font-weight: 500;
+    display: block;
+    margin: auto;
+  }
+  
+  .adjust-font-size {
+    font-size: 30px;
+  }
+  
+  .Session-Timeout-section-back {
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 410px;
+    background: #CCCCCC;
+    box-sizing: border-box;
+    border-radius: 10px;
+  }
+  
+  .Session-Timeout-content {
+    background-color: var( --primary);
+    width: 100%;
+    height: 50px;
+    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    Margin-top: -40px;
+  }
+  
+  .SessionTimeoutBodyContent {
+    width: 100%;
+    border-radius: 0px 0px 10px 10px;
+    background-color: #FFFFFF;
+    padding: 25px;
+  }
+  
+    .SessionTimeoutBodyContent h3 {
+      color: var( --primary);
+      font-size: 24px;
+      font-weight: 600;
+    }
+  
+    .SessionTimeoutBodyContent p {
+      color: #4F4F4F;
+      font-family: Roboto;
+    }
+  
+  .custom-icon-size {
+    font-size: 45px;
+  }
+  
+  .TimingFontSize {
+    font-size: 26px !important;
+  }
+  
+  /* Alert css ended */
+  
+
+
+  .Alert-section-back-child {
+    width: 400px;
+  }
+  
+  .Acc-Lock-img {
+    max-width: 42px !important;
+  }
+  
+
+  .DisclaimerBodyContent-child {
+    background-color: #F2F2F2 !important;
+  }
+  
+  .alert-btns {
+    padding-top: 15px;
+  }
+
+  h4{
+   color: var(--primary);
+  font-size: 24px;
+  font-weight: 700;
+  font-family: Roboto;
+  }
+
+  .main-content{
+    width:calc(100% - 260px);
+    margin-left:260px;  
+}
+
+.btn-primary {
+  background-color: #074888 !important;
+  border-radius: 6px !important;
+  padding: 10px 20px 10px 20px !important;
+}
+
+.btn {
+    display: inline-block;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    border: 0px;
+    padding: .4375rem 1.125rem;
+    font-size: .8125rem;
+    line-height: 1.25rem;
+    border-radius: 4px;
+}
+
+
+.center-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}

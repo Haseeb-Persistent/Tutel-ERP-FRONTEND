@@ -1,0 +1,17 @@
+<div class="Alert-section-back" tabindex="0" (keydown.enter)="onEnterPress(CloseBtn)" #modalContainer
+  style="outline: none">
+  <div class="section">
+    <div class="section-content">
+      <p class="Alert-Text">Alert</p>
+    </div>
+  </div>
+  <div class="DisclaimerBodyContent">
+    <p>
+      {{ message }}
+    </p>
+    <!-- <button type="button" #CloseBtn class="buttonProceed" (click)="closeDialog()">Close</button> -->
+    <button type="button" #CloseBtn class="buttonProceed" (click)="activeModal.close(true)">
+      Close
+    </button>
+  </div>
+</div>

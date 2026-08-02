@@ -1,0 +1,142 @@
+     <div class="code-block" >
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h4>{{ headerTitle }}</h4>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <!-- @if (setupData) {
+                        <app-dml-control [parentForm]="CompanySetup" [RowID]="rowId" [setupFromParent]="setupData"
+                            (OnSave)="onSave()" (OnUpdate)="onUpdate()" (OnAuthorize)="onAuthorize()"
+                            (OnReject)="onReject()" (OnReset)="onReset()" (OnViewChangeHistory)="onViewChangeHistory()">
+                        </app-dml-control>
+                        } -->
+                        <app-crud-button></app-crud-button>
+                    </div>
+
+                </div>
+            </div>
+
+<div class="code-block shadow-sm">
+    <div class=" ">
+        <div class="row g-3">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">
+                    Customer Name
+                </label>
+
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Customer Name">
+                    <div class="input-group-append"><button type="button" class="btn btn-outline-secondary"><em
+                                class="icon ni ni-search"></em></button><button type="button"
+                            class="btn btn-outline-secondary rounded-right"><em
+                                class="icon ni ni-delete-fill"></em></button></div>
+                </div>
+            </div>
+
+            <!-- Customer Code -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group">
+                    <label class="form-label">Company Code<span class="text-danger">
+                            *</span></label>
+                    <div class="form-control-wrap">
+                        <input type="text" class="form-control" limitInput="5" formControlName="companyCode"
+                            placeholder="5 Digit Company Code" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- CNIC -->
+            <div class="col-md-3">
+                <label class="form-label">
+                    CNIC
+                </label>
+
+                <input type="text" cnicFormat class="form-control" placeholder="XXXXX-XXXXXXX-X">
+            </div>
+
+            <!-- NTN -->
+            <div class="col-md-3">
+                <label class="form-label">
+                    NTN
+                </label>
+
+                <input type="text" class="form-control" placeholder="NTN">
+            </div>
+
+            <!-- Father Name -->
+            <div class="col-md-4">
+                <label class="form-label">
+                    Father Name
+                </label>
+
+                <input type="text" class="form-control" placeholder="Father Name">
+            </div>
+
+            <!-- Gender -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">
+                    Gender
+                </label>
+
+                <select class="form-control">
+                    <option>Select</option>
+                </select>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="col-md-3">
+                <label class="form-label">
+                    Date of Birth
+                </label>
+
+                <input type="date" class="form-control">
+            </div>
+
+            <!-- Marital Status -->
+            <div class="col-md-3">
+                <label class="form-label">
+                    Marital Status
+                </label>
+
+                <select class="form-control">
+                    <option>Select</option>
+                </select>
+            </div>
+
+            <!-- Nationality -->
+            <div class="col-md-4">
+                <label class="form-label">
+                    Nationality
+                </label>
+
+                <select class="form-control">
+                    <option>Select Nationality</option>
+                </select>
+            </div>
+
+            <!-- Religion -->
+            <div class="col-md-4">
+                <label class="form-label">
+                    Religion
+                </label>
+
+                <select class="form-control">
+                    <option>Select Religion</option>
+                </select>
+            </div>
+
+            <!-- Occupation -->
+            <div class="col-md-4">
+                <label class="form-label">
+                    Occupation
+                </label>
+
+                <select class="form-control">
+                    <option>Select Occupation</option>
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+</div>

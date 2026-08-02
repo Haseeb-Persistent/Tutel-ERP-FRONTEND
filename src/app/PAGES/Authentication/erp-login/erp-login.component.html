@@ -1,0 +1,78 @@
+<!-- erp-login.component.html -->
+<div class="login-container">
+  <div class="code-block" style="padding: 2.25rem !important;width: 400px;">
+    <div class="login-header">
+      <h2>LOGIN-ERP</h2>
+      <p>Please sign in to continue</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Username Field -->
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <div class="form-control-wrap">
+          <input 
+            type="text" 
+            id="username" 
+            class="form-control"
+            formControlName="username"
+            (input)="onFieldChange('username')"
+            [class.is-invalid]="(f['username'].invalid && (f['username'].touched || submitted)) || hasFieldError('username')"
+            [class.is-valid]="f['username'].valid && (f['username'].touched || submitted) && !hasFieldError('username')"
+            placeholder="Enter your username">
+        </div>
+        
+        <!-- Frontend Validation Errors -->
+        <div class="invalid-feedback" *ngIf="!hasFieldError('username') && f['username'].invalid && (f['username'].touched || submitted)">
+          <span *ngIf="f['username'].errors?.['required']">Username is required</span>
+        </div>
+        
+        <!-- Backend Field Errors (shows 401 error) -->
+        <div class="invalid-feedback" *ngIf="hasFieldError('username')">
+          <span *ngFor="let error of getFieldErrors('username')" class="d-block">
+            {{ error }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="form-control-wrap">
+          <input 
+            type="password" 
+            id="password" 
+            class="form-control"
+            formControlName="password"
+            (input)="onFieldChange('password')"
+            [class.is-invalid]="(f['password'].invalid && (f['password'].touched || submitted)) || hasFieldError('password')"
+            [class.is-valid]="f['password'].valid && (f['password'].touched || submitted) && !hasFieldError('password')"
+            placeholder="Enter your password">
+        </div>
+        
+        <!-- Frontend Validation Errors -->
+        <div class="invalid-feedback" *ngIf="!hasFieldError('password') && f['password'].invalid && (f['password'].touched || submitted)">
+          <span *ngIf="f['password'].errors?.['required']">Password is required</span>
+        </div>
+        
+        <!-- Backend Field Errors (shows 401 error) -->
+        <div class="invalid-feedback" *ngIf="hasFieldError('password')">
+          <span *ngFor="let error of getFieldErrors('password')" class="d-block">
+            {{ error }}
+          </span>
+        </div>
+      </div>
+
+      <div class="center-item">
+        <button 
+          class="btn btn-primary w-50" 
+          [disabled]="isLoading" 
+          type="submit">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm mr-2"></span>
+          <span *ngIf="!isLoading">Login</span>
+          <span *ngIf="isLoading">Logging in...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

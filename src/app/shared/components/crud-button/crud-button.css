@@ -1,0 +1,23 @@
+.btn-primary {
+  background-color: var(--primary) !important;
+  border-radius: 6px !important;
+  padding: 10px 20px 10px 20px !important;
+  margin-right: 10px;
+}
+.btn {
+    display: inline-block;
+    font-family: Roboto, sans-serif;
+    font-weight: 700;
+    color: #ffffff;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.4375rem 1.125rem;
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    border-radius: 4px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}

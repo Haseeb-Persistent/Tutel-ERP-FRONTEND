@@ -1,9 +1,18 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { RouterModule, RouterOutlet } from '@angular/router';
+
+import { ErpSidebarComponent } from './Layout/erp-sidebar/erp-sidebar.component';
+import { ErpHeaderComponent } from './Layout/erp-header/erp-header.component';
+import { MainLayoutComponent } from "./Layout/main-layout/main-layout.component";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
