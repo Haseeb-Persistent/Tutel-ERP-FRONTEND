@@ -113,7 +113,6 @@ export class AuthService {
           this.router.navigate(['/login']);
         }),
         catchError((error) => {
-          // Even if logout fails on server, clear local storage
           this.clearStorage();
           this.currentUserSubject.next(null);
           this.router.navigate(['/login']);
@@ -125,7 +124,6 @@ export class AuthService {
   revokeAllTokens(): Observable<any> {
     const token = this.getAccessToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
     return this.http.post(`${this.apiUrl}/auth/revoke-all`, {}, { headers })
       .pipe(
         tap(() => {

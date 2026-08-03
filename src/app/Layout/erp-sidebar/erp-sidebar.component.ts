@@ -3,7 +3,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { Menu } from '../../model/menu.model';
-import { MenuService } from '../../Services/menu.service';
+import { MenuService } from '../../core/services/menu.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DialogService } from '../../../Services/DialogService';
+import { DialogService } from '../../../core/services/DialogService';
 
 @Component({
   selector: 'app-crud-button',

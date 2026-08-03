@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { AlertModalComponent } from '../shared/components/alert-modal/alert-modal.component';
-import { ConfirmDialog } from '../shared/components/confirm-dialog/confirm-dialog';
+import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
+import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-dialog';
 
 @Injectable({
   providedIn: 'root',

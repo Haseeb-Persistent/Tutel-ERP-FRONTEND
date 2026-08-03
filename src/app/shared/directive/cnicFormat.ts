@@ -1,5 +1,5 @@
 import { Directive, ElementRef, HostListener } from '@angular/core';
-import { DialogService } from '../../Services/DialogService';
+import { DialogService } from '../../core/services/DialogService';
 
 @Directive({
   selector: '[cnicFormat]',

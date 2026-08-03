@@ -2,8 +2,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Menu } from '../model/menu.model';
-import { environment } from '../../environments/environment.development';
+import { Menu } from '../../model/menu.model';
+import { environment } from '../../../environments/environment.development';
 
 export interface ApiResponse {
   responseCode: number;
