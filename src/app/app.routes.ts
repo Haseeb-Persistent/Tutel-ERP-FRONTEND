@@ -7,6 +7,7 @@ import { inject } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
 import { filter, map, take } from 'rxjs';
 import { CompanyRoute } from './PAGES/COMPANY_SETUP/erp-company-setup/Company.route';
+
 export const routes: Routes = [
   // Default redirect
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -47,7 +48,7 @@ export const routes: Routes = [
           .then(m => m.ErpDashboardComponent)
       },
 
-      // Feature Modules
+      // Feature Modules - ADD THIS BEFORE WILDCARD
       ...CompanyRoute,
 
       // Default empty content area
@@ -60,7 +61,7 @@ export const routes: Routes = [
           .then(m => m.NotFoundComponent)
       },
 
-      // Wildcard - redirect to 404
+      // Wildcard - redirect to 404 (MUST BE LAST)
       { path: '**', redirectTo: 'pageNotFound' }
     ]
   },

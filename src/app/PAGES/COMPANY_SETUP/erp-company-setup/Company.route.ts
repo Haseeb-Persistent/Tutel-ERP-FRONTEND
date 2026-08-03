@@ -1,4 +1,3 @@
-// PAGES/COMPANY_SETUP/Company.route.ts
 import { Routes } from '@angular/router';
 
 export const CompanyRoute: Routes = [

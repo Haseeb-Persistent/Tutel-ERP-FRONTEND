@@ -30,14 +30,11 @@ export class ErpLoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Original FormBuilder with validators
     this.loginForm = this.formBuilder.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
-
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-
+    // this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
     // Redirect if already logged in
     if (this.authService.isLoggedIn()) {
       this.router.navigate([this.returnUrl]);
