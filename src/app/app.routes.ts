@@ -7,6 +7,7 @@ import { inject } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
 import { filter, map, take } from 'rxjs';
 import { CompanyRoute } from './PAGES/COMPANY_SETUP/erp-company-setup/Company.route';
+import { UserRoute } from './PAGES/USER_SETUP/User.route';
 
 export const routes: Routes = [
   // Default redirect
@@ -47,32 +48,21 @@ export const routes: Routes = [
         loadComponent: () => import('./PAGES/erp-dashboard/erp-dashboard.component')
           .then(m => m.ErpDashboardComponent)
       },
-
-      // Feature Modules - ADD THIS BEFORE WILDCARD
       ...CompanyRoute,
-
-      // Default empty content area
+      ...UserRoute,
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
-      // 404 - Page Not Found
       {
         path: 'pageNotFound',
         loadComponent: () => import('./shared/components/not-found/not-found.component')
           .then(m => m.NotFoundComponent)
       },
-
-      // Wildcard - redirect to 404 (MUST BE LAST)
       { path: '**', redirectTo: 'pageNotFound' }
     ]
   },
-
-  // Old dashboard path redirect (for backward compatibility)
   {
     path: 'dashboard',
     redirectTo: 'app/dashboard',
     pathMatch: 'full'
   },
-
-  // Catch all - redirect to dashboard
   { path: '**', redirectTo: 'app/dashboard' }
 ];

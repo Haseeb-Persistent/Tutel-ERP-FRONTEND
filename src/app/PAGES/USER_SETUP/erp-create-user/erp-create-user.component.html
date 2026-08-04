@@ -1,0 +1,508 @@
+<!-- erp-create-user.component.html -->
+<div class="code-block">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <h4>{{ headerTitle || 'Create User' }}</h4>
+        </div>
+        <div class="d-flex align-items-center">
+            <app-crud-button
+                (OnSave)="onSave()"
+                (OnUpdate)="onUpdate()"
+                (OnAuthorize)="onAuthorize()"
+                (OnReject)="onReject()"
+                (OnReset)="onReset()"
+                (OnViewChangeHistory)="onViewChangeHistory()">
+            </app-crud-button>
+        </div>
+    </div>
+</div>
+
+<div class="code-block shadow-sm mt-3">
+    <form [formGroup]="userForm" (ngSubmit)="onSave()">
+        <div class="row g-3">
+            <!-- ==================== PERSONAL INFORMATION ==================== -->
+            <div class="col-12">
+                <h5 class="text-primary border-bottom pb-2">Personal Information</h5>
+            </div>
+
+            <!-- Customer Name -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">
+                    Customer Name <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="customerName"
+                    placeholder="Enter Customer Name"
+                    [class.is-invalid]="isFieldInvalid('customerName')">
+                @if (isFieldInvalid('customerName')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('customerName') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Company Code -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">
+                    Company Code <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="companyCode"
+                    placeholder="3-10 Character Code"
+                    restrictInput="alphanumeric"
+                    [class.is-invalid]="isFieldInvalid('companyCode')">
+                @if (isFieldInvalid('companyCode')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('companyCode') }}
+                    </div>
+                }
+            </div>
+
+            <!-- CNIC -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    CNIC <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="cnic"
+                    placeholder="XXXXX-XXXXXXX-X"
+                    [class.is-invalid]="isFieldInvalid('cnic')">
+                @if (isFieldInvalid('cnic')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('cnic') }}
+                    </div>
+                }
+            </div>
+
+            <!-- NTN -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">NTN</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="ntn"
+                    placeholder="XXXXXXX-X"
+                    [class.is-invalid]="isFieldInvalid('ntn')">
+                @if (isFieldInvalid('ntn')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('ntn') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Father Name -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Father Name <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="fatherName"
+                    placeholder="Enter Father Name"
+                    alphaOnly
+                    [class.is-invalid]="isFieldInvalid('fatherName')">
+                @if (isFieldInvalid('fatherName')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('fatherName') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Gender -->
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <label class="form-label">
+                    Gender <span class="text-danger">*</span>
+                </label>
+                <select 
+                    class="form-control" 
+                    formControlName="gender"
+                    [class.is-invalid]="isFieldInvalid('gender')">
+                    <option value="">Select</option>
+                    @for (option of genderOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                @if (isFieldInvalid('gender')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('gender') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <label class="form-label">
+                    Date of Birth <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="date" 
+                    class="form-control" 
+                    formControlName="dateOfBirth"
+                    [class.is-invalid]="isFieldInvalid('dateOfBirth')">
+                @if (isFieldInvalid('dateOfBirth')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('dateOfBirth') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Marital Status -->
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <label class="form-label">
+                    Marital Status <span class="text-danger">*</span>
+                </label>
+                <select 
+                    class="form-control" 
+                    formControlName="maritalStatus"
+                    [class.is-invalid]="isFieldInvalid('maritalStatus')">
+                    <option value="">Select</option>
+                    @for (option of maritalStatusOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                @if (isFieldInvalid('maritalStatus')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('maritalStatus') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Nationality -->
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <label class="form-label">
+                    Nationality <span class="text-danger">*</span>
+                </label>
+                <select 
+                    class="form-control" 
+                    formControlName="nationality"
+                    [class.is-invalid]="isFieldInvalid('nationality')">
+                    <option value="">Select</option>
+                    @for (option of nationalityOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                @if (isFieldInvalid('nationality')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('nationality') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Religion -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Religion <span class="text-danger">*</span>
+                </label>
+                <select 
+                    class="form-control" 
+                    formControlName="religion"
+                    [class.is-invalid]="isFieldInvalid('religion')">
+                    <option value="">Select</option>
+                    @for (option of religionOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                @if (isFieldInvalid('religion')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('religion') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Occupation -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Occupation <span class="text-danger">*</span>
+                </label>
+                <select 
+                    class="form-control" 
+                    formControlName="occupation"
+                    [class.is-invalid]="isFieldInvalid('occupation')">
+                    <option value="">Select</option>
+                    @for (option of occupationOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                @if (isFieldInvalid('occupation')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('occupation') }}
+                    </div>
+                }
+            </div>
+
+            <!-- ==================== CONTACT INFORMATION ==================== -->
+            <div class="col-12 mt-3">
+                <h5 class="text-primary border-bottom pb-2">Contact Information</h5>
+            </div>
+
+            <!-- Email -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Email <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="email" 
+                    class="form-control" 
+                    formControlName="email"
+                    placeholder="Enter Email Address"
+                    emailFormat
+                    [class.is-invalid]="isFieldInvalid('email')">
+                @if (isFieldInvalid('email')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('email') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Phone No -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Phone No <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="phoneNo"
+                    placeholder="11 Digit Phone Number"
+                    numericOnly
+                    [class.is-invalid]="isFieldInvalid('phoneNo')">
+                @if (isFieldInvalid('phoneNo')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('phoneNo') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Mobile No -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Mobile No <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="mobileNo"
+                    placeholder="11 Digit Mobile Number"
+                    numericOnly
+                    [class.is-invalid]="isFieldInvalid('mobileNo')">
+                @if (isFieldInvalid('mobileNo')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('mobileNo') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Address -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">
+                    Address <span class="text-danger">*</span>
+                </label>
+                <textarea 
+                    class="form-control" 
+                    formControlName="address"
+                    rows="2"
+                    placeholder="Enter Address"
+                    [class.is-invalid]="isFieldInvalid('address')"></textarea>
+                @if (isFieldInvalid('address')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('address') }}
+                    </div>
+                }
+            </div>
+
+            <!-- City -->
+            <div class="col-lg-2 col-md-2 col-sm-12">
+                <label class="form-label">
+                    City <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="city"
+                    placeholder="City"
+                    [class.is-invalid]="isFieldInvalid('city')">
+                @if (isFieldInvalid('city')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('city') }}
+                    </div>
+                }
+            </div>
+
+            <!-- State -->
+            <div class="col-lg-2 col-md-2 col-sm-12">
+                <label class="form-label">
+                    State <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="state"
+                    placeholder="State"
+                    [class.is-invalid]="isFieldInvalid('state')">
+                @if (isFieldInvalid('state')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('state') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Country -->
+            <div class="col-lg-2 col-md-2 col-sm-12">
+                <label class="form-label">
+                    Country <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="country"
+                    placeholder="Country"
+                    [class.is-invalid]="isFieldInvalid('country')">
+                @if (isFieldInvalid('country')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('country') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Postal Code -->
+            <div class="col-lg-2 col-md-2 col-sm-12">
+                <label class="form-label">Postal Code</label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="postalCode"
+                    placeholder="5 Digit"
+                    numericOnly
+                    [class.is-invalid]="isFieldInvalid('postalCode')">
+                @if (isFieldInvalid('postalCode')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('postalCode') }}
+                    </div>
+                }
+            </div>
+
+            <!-- ==================== ACCOUNT INFORMATION ==================== -->
+            <div class="col-12 mt-3">
+                <h5 class="text-primary border-bottom pb-2">Account Information</h5>
+            </div>
+
+            <!-- Username -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Username <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="username"
+                    placeholder="Enter Username"
+                    noSpace
+                    [class.is-invalid]="isFieldInvalid('username')">
+                @if (isFieldInvalid('username')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('username') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Password -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Password <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="password" 
+                    class="form-control" 
+                    formControlName="password"
+                    placeholder="Enter Password (Min 6 characters)"
+                    [class.is-invalid]="isFieldInvalid('password')">
+                @if (isFieldInvalid('password')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('password') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Confirm Password <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="password" 
+                    class="form-control" 
+                    formControlName="confirmPassword"
+                    placeholder="Confirm Password"
+                    [class.is-invalid]="isFieldInvalid('confirmPassword')">
+                @if (isFieldInvalid('confirmPassword')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('confirmPassword') }}
+                    </div>
+                }
+            </div>
+
+            <!-- User Type -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    User Type <span class="text-danger">*</span>
+                </label>
+                <select 
+                    class="form-control" 
+                    formControlName="userType"
+                    [class.is-invalid]="isFieldInvalid('userType')">
+                    <option value="">Select</option>
+                    @for (option of userTypeOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                @if (isFieldInvalid('userType')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('userType') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Status -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">
+                    Status <span class="text-danger">*</span>
+                </label>
+                <select 
+                    class="form-control" 
+                    formControlName="status"
+                    [class.is-invalid]="isFieldInvalid('status')">
+                    @for (option of statusOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                @if (isFieldInvalid('status')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('status') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Is Active (Hidden or Toggle) -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <label class="form-label">Active</label>
+                <div class="form-check form-switch">
+                    <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        formControlName="isActive"
+                        id="isActive">
+                    <label class="form-check-label" for="isActive">
+                        {{ userForm.get('isActive')?.value ? 'Active' : 'Inactive' }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
