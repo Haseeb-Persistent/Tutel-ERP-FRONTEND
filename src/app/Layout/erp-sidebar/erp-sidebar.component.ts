@@ -65,25 +65,26 @@ export class ErpSidebarComponent implements OnInit {
     });
   }
 
- goto(menu: Menu) {
+  goto(menu: Menu) {
+    // If it has children, just toggle and don't navigate
+    if (menu.children && menu.children.length > 0) {
+      menu.expanded = !menu.expanded;
+      return;
+    }
 
-  if (menu.children && menu.children.length > 0) {
-    menu.expanded = !menu.expanded;
-    return;
+    this.activeMenu = menu;
+
+    this.router.navigate(
+      ['/app', ...menu.route.split('/').filter(Boolean)],
+      {
+        queryParams: {
+          f: menu.menuId,
+          formTitle: menu.menuName
+        }
+      }
+    );
   }
 
-  this.activeMenu = menu;
-
-  this.router.navigate(
-    ['/app', ...menu.route.split('/').filter(Boolean)],
-    {
-      queryParams: {
-        f: menu.menuId,
-        formTitle: menu.menuName
-      }
-    }
-  );
-}
   toggle(menu: Menu) {
     menu.expanded = !menu.expanded;
   }
@@ -91,5 +92,10 @@ export class ErpSidebarComponent implements OnInit {
   // Helper to check active menu
   isActive(menu: Menu): boolean {
     return this.activeMenu?.menuId === menu.menuId;
+  }
+
+  // Check if menu is a parent (has children)
+  isParentMenu(menu: Menu): boolean {
+    return !!(menu.children && menu.children.length > 0);
   }
 }

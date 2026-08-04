@@ -1,6 +1,8 @@
+<!-- erp-sidebar.component.html -->
 <div class="sidebar">
     <div class="sidebar-header">
-        <h5 class="text-primary">Admin</h5>
+        <div class="logo-icon">E</div>
+        <span>ERP System</span>
     </div>
 
     <div class="search-box">
@@ -16,13 +18,21 @@
             <p class="mt-2 text-muted small">Loading menus...</p>
         </div>
     }
+
+    @if (errorMessage) {
+        <div class="alert alert-danger m-2">
+            {{ errorMessage }}
+        </div>
+    }
+
+    @if (!loading && !errorMessage) {
         <nav class="nav">
             <div class="nav-label">Main Menu</div>
             
             @for (menu of menus; track menu.menuId) {
                 <div class="nav-item">
                     <!-- Parent Menu -->
-                    <div class="nav-link" 
+                    <div class="parent-link" 
                          (click)="goto(menu)" 
                          [class.active]="activeMenu?.menuId === menu.menuId">
                         @if (menu.icon) {
@@ -37,12 +47,12 @@
                         }
                     </div>
 
-                    <!-- Child Menus -->
+                    <!-- Child Menus (Level 1) -->
                     @if (menu.children && menu.children.length > 0 && menu.expanded) {
                         <div class="submenu">
                             @for (child of menu.children; track child.menuId) {
                                 <div class="nav-item">
-                                    <div class="nav-link" 
+                                    <div class="child-link" 
                                          (click)="goto(child)" 
                                          [class.active]="activeMenu?.menuId === child.menuId">
                                         @if (child.icon) {
@@ -51,12 +61,12 @@
                                         <span>{{ child.menuName }}</span>
                                     </div>
 
-                                    <!-- Sub-child Menus -->
+                                    <!-- Sub-Child Menus (Level 2) -->
                                     @if (child.children && child.children.length > 0 && child.expanded) {
                                         <div class="submenu">
                                             @for (subChild of child.children; track subChild.menuId) {
                                                 <div class="nav-item">
-                                                    <div class="nav-link" 
+                                                    <div class="sub-child-link" 
                                                          (click)="goto(subChild)" 
                                                          [class.active]="activeMenu?.menuId === subChild.menuId">
                                                         @if (subChild.icon) {
@@ -75,4 +85,5 @@
                 </div>
             }
         </nav>
+    }
 </div>

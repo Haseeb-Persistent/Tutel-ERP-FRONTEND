@@ -104,8 +104,10 @@
     margin-bottom: 2px;
 }
 
-/* Parent Menu Link */
-.nav-link {
+/* ================================================================ */
+/*                     PARENT MENU (Level 0)                         */
+/* ================================================================ */
+.parent-link {
     width: 100%;
     height: 42px;
     display: flex;
@@ -121,9 +123,10 @@
     text-decoration: none;
     position: relative;
     border: none;
+    background: transparent;
 }
 
-.nav-link i:first-child {
+.parent-link i:first-child {
     width: 20px;
     text-align: center;
     font-size: 16px;
@@ -132,7 +135,7 @@
     transition: color 0.25s ease;
 }
 
-.nav-link span {
+.parent-link span {
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
@@ -140,7 +143,7 @@
     color: var(--primary);
 }
 
-.nav-link .arrow {
+.parent-link .arrow {
     font-size: 12px;
     color: var(--primary);
     transition: transform 0.3s ease;
@@ -148,48 +151,48 @@
     margin-left: auto;
 }
 
-.nav-link .arrow.rotated {
+.parent-link .arrow.rotated {
     transform: rotate(180deg);
 }
 
 /* Parent Menu Hover */
-.nav-link:hover {
+.parent-link:hover {
     background: var(--primary);
     color: #ffffff;
 }
 
-.nav-link:hover i:first-child {
+.parent-link:hover i:first-child {
     color: #ffffff;
 }
 
-.nav-link:hover span {
+.parent-link:hover span {
     color: #ffffff;
 }
 
-.nav-link:hover .arrow {
+.parent-link:hover .arrow {
     color: #ffffff;
 }
 
 /* Parent Menu Active */
-.nav-link.active {
+.parent-link.active {
     background: var(--primary);
     color: #ffffff;
 }
 
-.nav-link.active i:first-child {
+.parent-link.active i:first-child {
     color: #ffffff;
 }
 
-.nav-link.active span {
+.parent-link.active span {
     color: #ffffff;
 }
 
-.nav-link.active .arrow {
+.parent-link.active .arrow {
     color: #ffffff;
 }
 
-/* Active indicator */
-.nav-link.active::before {
+/* Active indicator for parent */
+.parent-link.active::before {
     content: '';
     position: absolute;
     left: 0;
@@ -201,114 +204,197 @@
     border-radius: 0 4px 4px 0;
 }
 
-/* ===== SUBMENU ===== */
+/* ================================================================ */
+/*                     SUBMENU CONTAINER                            */
+/* ================================================================ */
 .submenu {
     padding-left: 16px;
     margin-left: 14px;
+    border-left: 2px solid #e2e8f0;
     animation: slideDown 0.3s ease;
 }
 
-/* Child Menu Links */
-.submenu .nav-link {
+/* ================================================================ */
+/*                     CHILD MENU (Level 1)                         */
+/* ================================================================ */
+.child-link {
+    width: 100%;
     height: 38px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    gap: 12px;
     font-size: 13px;
     font-weight: 400;
-    padding-left: 14px;
-    border-radius: 8px;
-    background-color: transparent;
+    padding: 0 14px;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    border: none;
+    background: transparent;
+    color: #1a1a2e;
+    transition: all 0.25s ease;
 }
 
-.submenu .nav-link i:first-child {
+.child-link i:first-child {
     font-size: 14px;
     width: 18px;
     color: var(--primary);
+    flex-shrink: 0;
+    transition: color 0.25s ease;
 }
 
-.submenu .nav-link span {
+.child-link span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #1a1a2e;
+}
+
+.child-link .arrow {
+    font-size: 12px;
+    color: #9aa0b5;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.child-link .arrow.rotated {
+    transform: rotate(180deg);
+}
+
+/* Child Menu Hover - Light Blue Background */
+.child-link:hover {
+    background: var(--primary-light);
     color: var(--primary);
 }
 
-.submenu .nav-link .arrow {
+.child-link:hover i:first-child {
     color: var(--primary);
 }
 
-/* Child Menu Hover */
-.submenu .nav-link:hover {
-    background: var(--primary);
-    color: #ffffff;
+.child-link:hover span {
+    color: var(--primary);
 }
 
-.submenu .nav-link:hover i:first-child {
-    color: #ffffff;
+.child-link:hover .arrow {
+    color: var(--primary);
 }
 
-.submenu .nav-link:hover span {
-    color: #ffffff;
+/* Child Menu Active - Light Blue Background */
+.child-link.active {
+    background: var(--primary-light);
+    color: var(--primary);
 }
 
-.submenu .nav-link:hover .arrow {
-    color: #ffffff;
+.child-link.active i:first-child {
+    color: var(--primary);
 }
 
-/* Child Menu Active */
-.submenu .nav-link.active {
-    background: var(--primary);
-    color: #ffffff;
+.child-link.active span {
+    color: var(--primary);
 }
 
-.submenu .nav-link.active i:first-child {
-    color: #ffffff;
+.child-link.active .arrow {
+    color: var(--primary);
 }
 
-.submenu .nav-link.active span {
-    color: #ffffff;
-}
-
-.submenu .nav-link.active .arrow {
-    color: #ffffff;
-}
-
-/* Sub-child menus */
+/* ================================================================ */
+/*                     SUB-CHILD MENU (Level 2)                     */
+/* ================================================================ */
 .submenu .submenu {
     padding-left: 12px;
     margin-left: 12px;
+    border-left-color: #e2e8f0;
 }
 
-.submenu .submenu .nav-link {
+.sub-child-link {
+    width: 100%;
     height: 36px;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    gap: 12px;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 0 10px;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    border: none;
+    background: transparent;
+    color: #64748b;
+    transition: all 0.25s ease;
+}
+
+.sub-child-link i:first-child {
     font-size: 13px;
-    padding-left: 10px;
+    width: 16px;
+    color: #94a3b8;
+    flex-shrink: 0;
+    transition: color 0.25s ease;
 }
 
-/* Sub-child hover */
-.submenu .submenu .nav-link:hover {
-    background: var(--primary);
-    color: #ffffff;
+.sub-child-link span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #64748b;
 }
 
-.submenu .submenu .nav-link:hover i:first-child {
-    color: #ffffff;
+.sub-child-link .arrow {
+    font-size: 12px;
+    color: #9aa0b5;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-left: auto;
 }
 
-.submenu .submenu .nav-link:hover span {
-    color: #ffffff;
+.sub-child-link .arrow.rotated {
+    transform: rotate(180deg);
 }
 
-/* Sub-child active */
-.submenu .submenu .nav-link.active {
-    background: var(--primary);
-    color: #ffffff;
+/* Sub-Child Hover - Very Light Gray */
+.sub-child-link:hover {
+    background: #f1f5f9;
+    color: var(--primary);
 }
 
-.submenu .submenu .nav-link.active i:first-child {
-    color: #ffffff;
+.sub-child-link:hover i:first-child {
+    color: var(--primary);
 }
 
-.submenu .submenu .nav-link.active span {
-    color: #ffffff;
+.sub-child-link:hover span {
+    color: var(--primary);
 }
 
-/* ===== ANIMATIONS ===== */
+.sub-child-link:hover .arrow {
+    color: var(--primary);
+}
+
+/* Sub-Child Active - Very Light Gray */
+.sub-child-link.active {
+    background: #f1f5f9;
+    color: var(--primary);
+}
+
+.sub-child-link.active i:first-child {
+    color: var(--primary);
+}
+
+.sub-child-link.active span {
+    color: var(--primary);
+}
+
+.sub-child-link.active .arrow {
+    color: var(--primary);
+}
+
+/* ================================================================ */
+/*                     ANIMATIONS                                   */
+/* ================================================================ */
 @keyframes slideDown {
     from {
         opacity: 0;
@@ -320,7 +406,9 @@
     }
 }
 
-/* ===== SCROLLBAR ===== */
+/* ================================================================ */
+/*                     SCROLLBAR                                    */
+/* ================================================================ */
 .sidebar::-webkit-scrollbar {
     width: 4px;
 }
@@ -338,7 +426,9 @@
     background: #bdbdbd;
 }
 
-/* ===== LOADING / ERROR ===== */
+/* ================================================================ */
+/*                     LOADING / ERROR                              */
+/* ================================================================ */
 .spinner-border {
     display: inline-block;
     width: 2rem;
@@ -365,7 +455,9 @@
     font-size: 14px;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ================================================================ */
+/*                     RESPONSIVE                                   */
+/* ================================================================ */
 @media (max-width: 768px) {
     .sidebar {
         width: 72px;
@@ -379,8 +471,12 @@
 
     .sidebar-header span,
     .search-box input,
-    .nav-link span,
-    .nav-link .arrow,
+    .parent-link span,
+    .parent-link .arrow,
+    .child-link span,
+    .child-link .arrow,
+    .sub-child-link span,
+    .sub-child-link .arrow,
     .nav-label {
         display: none;
     }
@@ -395,34 +491,44 @@
         font-size: 18px;
     }
 
-    .nav-link {
+    .parent-link {
         justify-content: center;
         padding: 0 10px;
         height: 40px;
     }
 
-    .nav-link i:first-child {
+    .parent-link i:first-child {
         margin-right: 0;
         font-size: 18px;
     }
 
-    .nav-link.active::before {
+    .parent-link.active::before {
         display: none;
+    }
+
+    .child-link {
+        justify-content: center;
+        padding: 0 10px;
+        height: 36px;
+    }
+
+    .child-link i:first-child {
+        font-size: 14px;
+    }
+
+    .sub-child-link {
+        justify-content: center;
+        padding: 0 10px;
+        height: 34px;
+    }
+
+    .sub-child-link i:first-child {
+        font-size: 12px;
     }
 
     .submenu {
         padding-left: 0;
         margin-left: 0;
         border-left: none;
-    }
-
-    .submenu .nav-link {
-        justify-content: center;
-        padding: 0 10px;
-        height: 36px;
-    }
-
-    .submenu .nav-link i:first-child {
-        font-size: 14px;
     }
 }

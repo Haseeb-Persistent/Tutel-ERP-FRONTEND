@@ -1,6 +1,7 @@
 // erp-header.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-erp-header',
@@ -9,7 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ErpHeaderComponent implements OnInit {
 
-  constructor(private _activatedRoute: ActivatedRoute) { }
+  constructor(private _activatedRoute: ActivatedRoute, private authService: AuthService,
+  ) { }
 
   formId: string = '';
   headerTitle: string = 'Dashboard';
@@ -25,8 +27,14 @@ export class ErpHeaderComponent implements OnInit {
     window.history.back();
   }
 
-  logout() {
-    // Add your logout logic here
-    console.log('Logout clicked');
+logout() {
+    this.authService.logout().subscribe({
+      next: () => { 
+        console.log('Logout successful');
+      },
+      error: (error) => {
+        console.error('Logout error:', error);
+      }
+    });
   }
 }

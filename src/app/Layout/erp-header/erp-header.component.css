@@ -1,6 +1,6 @@
 .navbar-custom {
   background: var(--primary);
-  height: 60px;
+  height: 70px;
   padding: 0 24px;
   width: calc(100% - 260px);
   margin-left: 260px;
