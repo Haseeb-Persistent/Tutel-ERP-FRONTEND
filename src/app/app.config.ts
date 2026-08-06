@@ -1,16 +1,16 @@
-// app.config.ts
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
-  provideZonelessChangeDetection
+  provideZonelessChangeDetection,
+  importProvidersFrom // Add this import
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { NgxUiLoaderModule } from 'ngx-ui-loader'; // Import the module
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { LoaderInterceptor } from './core/interceptors/loader.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,18 +19,37 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     
-    // HTTP Client with interceptors
+    // HTTP Client
     provideHttpClient(
       withFetch(),
-      withInterceptors([authInterceptor]), // Functional interceptor
-      withInterceptorsFromDi() // Allow class-based interceptors
+      withInterceptors([authInterceptor])
     ),
     
-    // Class-based interceptor for loader
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: LoaderInterceptor,
-      multi: true
-    }
+    // NGX UI Loader - Use importProvidersFrom instead
+    importProvidersFrom(
+      NgxUiLoaderModule.forRoot({
+        bgsColor: '#3f51b5',
+        bgsOpacity: 0.5,
+        bgsSize: 60,
+        bgsType: 'ball-spin-clockwise',
+        blur: 8,
+        delay: 0,
+        fastFadeOut: true,
+        fgsColor: '#3f51b5',
+        fgsType: 'ball-spin-clockwise',
+        gap: 24,
+        logoUrl: '',
+        masterLoaderId: 'master',
+        overlayBorderRadius: '0',
+        overlayColor: 'rgba(40, 40, 40, 0.8)',
+        pbColor: '#3f51b5',
+        pbDirection: 'ltr',
+        pbThickness: 3,
+        hasProgressBar: true,
+        text: '',
+        textColor: '#FFFFFF',
+        maxTime: -1
+      })
+    )
   ]
 };

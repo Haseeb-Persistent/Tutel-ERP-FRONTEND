@@ -1,11 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, RouterOutlet } from '@angular/router';
-
-import { ErpSidebarComponent } from './Layout/erp-sidebar/erp-sidebar.component';
-import { ErpHeaderComponent } from './Layout/erp-header/erp-header.component';
-import { MainLayoutComponent } from "./Layout/main-layout/main-layout.component";
-import { LoaderComponent } from "./shared/components/loader/loader.component";
+import { RouterOutlet } from '@angular/router';
+import { 
+  NgxUiLoaderModule, 
+  NgxUiLoaderRouterModule,
+  NgxUiLoaderHttpModule 
+} from 'ngx-ui-loader';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +13,10 @@ import { LoaderComponent } from "./shared/components/loader/loader.component";
   imports: [
     CommonModule,
     RouterOutlet,
-    LoaderComponent
-],
+    NgxUiLoaderModule,
+    NgxUiLoaderRouterModule, // For router loading
+    NgxUiLoaderHttpModule    // For HTTP loading
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
