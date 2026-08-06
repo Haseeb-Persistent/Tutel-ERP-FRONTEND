@@ -1,4 +1,3 @@
-// erp-sidebar.component.ts
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -12,8 +11,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     RouterModule,
-    FormsModule
-  ],
+    FormsModule,
+],
   templateUrl: './erp-sidebar.component.html',
   styleUrls: ['./erp-sidebar.component.css']
 })
@@ -37,8 +36,6 @@ export class ErpSidebarComponent implements OnInit {
     this.loading = true;
     this.MenuService.getMenus().subscribe({
       next: (res: any) => {
-        console.log('API Response:', res);
-        
         if (Array.isArray(res)) {
           this.menus = res;
         } else if (res && res.data && Array.isArray(res.data)) {
@@ -50,9 +47,7 @@ export class ErpSidebarComponent implements OnInit {
           this.errorMessage = 'Unexpected data format from server';
           this.menus = [];
         }
-        
         this.loading = false;
-        console.log('Menus assigned:', this.menus);
         this.cdr.detectChanges();
       },
       error: (error) => {
@@ -66,14 +61,11 @@ export class ErpSidebarComponent implements OnInit {
   }
 
   goto(menu: Menu) {
-    // If it has children, just toggle and don't navigate
     if (menu.children && menu.children.length > 0) {
       menu.expanded = !menu.expanded;
       return;
     }
-
     this.activeMenu = menu;
-
     this.router.navigate(
       ['/app', ...menu.route.split('/').filter(Boolean)],
       {
@@ -89,12 +81,10 @@ export class ErpSidebarComponent implements OnInit {
     menu.expanded = !menu.expanded;
   }
 
-  // Helper to check active menu
   isActive(menu: Menu): boolean {
     return this.activeMenu?.menuId === menu.menuId;
   }
 
-  // Check if menu is a parent (has children)
   isParentMenu(menu: Menu): boolean {
     return !!(menu.children && menu.children.length > 0);
   }
