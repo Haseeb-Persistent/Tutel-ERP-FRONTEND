@@ -1,2 +1,26 @@
-<ngx-ui-loader></ngx-ui-loader>
+<!-- Custom template for ngx-ui-loader -->
+<ng-template #customLoader>
+  <svg class="loader" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="45" fill="#ffffff" />
+    <circle 
+      cx="50" 
+      cy="50" 
+      r="25" 
+      fill="none" 
+      stroke="#2b5ce6" 
+      stroke-width="6" 
+      stroke-linecap="round" 
+      stroke-dasharray="45 250" 
+    />
+  </svg>
+</ng-template>
+
+<!-- ngx-ui-loader using custom template -->
+<ngx-ui-loader 
+  [loaderId]="'master'"
+  [logoUrl]="''"
+  [overlayColor]="'rgba(3, 3, 3, 0.5)'"
+  [fgsTemplate]="customLoader">
+</ngx-ui-loader>
+
 <router-outlet></router-outlet>

@@ -4,7 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { 
   NgxUiLoaderModule, 
   NgxUiLoaderRouterModule,
-  NgxUiLoaderHttpModule 
+  NgxUiLoaderHttpModule
 } from 'ngx-ui-loader';
 
 @Component({
@@ -14,8 +14,8 @@ import {
     CommonModule,
     RouterOutlet,
     NgxUiLoaderModule,
-    NgxUiLoaderRouterModule, // For router loading
-    NgxUiLoaderHttpModule    // For HTTP loading
+    NgxUiLoaderRouterModule,
+    NgxUiLoaderHttpModule
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'

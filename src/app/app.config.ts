@@ -35,7 +35,7 @@ export const appConfig: ApplicationConfig = {
         blur: 8,
         delay: 0,
         fastFadeOut: true,
-        fgsColor: '#3f51b5',
+        fgsColor: '#3e57e9',
         fgsType: 'ball-spin-clockwise',
         gap: 24,
         logoUrl: '',
