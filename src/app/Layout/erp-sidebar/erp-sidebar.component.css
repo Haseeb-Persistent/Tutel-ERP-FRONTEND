@@ -580,8 +580,8 @@
 .skeleton__block {
   height: 42px;
   width: 100%;
-  margin-bottom: 4px;
-  border-radius: 6px;
+  margin-bottom: 12px;
+  border-radius: 0px;
 }
 
 /* Animation */
