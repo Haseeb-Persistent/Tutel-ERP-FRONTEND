@@ -8,6 +8,7 @@ import { AuthService } from './core/services/auth.service';
 import { filter, map, take } from 'rxjs';
 import { CompanyRoute } from './PAGES/COMPANY_SETUP/erp-company-setup/Company.route';
 import { UserRoute } from './PAGES/USER_SETUP/User.route';
+import { LocationRoute } from './PAGES/Location-Setup/location.route';
 
 export const routes: Routes = [
   // Default redirect
@@ -50,6 +51,7 @@ export const routes: Routes = [
       },
       ...CompanyRoute,
       ...UserRoute,
+      ...LocationRoute,
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       {
         path: 'pageNotFound',

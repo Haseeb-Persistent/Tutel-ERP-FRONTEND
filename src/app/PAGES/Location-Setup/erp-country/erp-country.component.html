@@ -1,0 +1,83 @@
+<!-- erp-country.component.html -->
+<div class="code-block">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <h4>{{ headerTitle || 'Country Setup' }}</h4>
+        </div>
+        <div class="d-flex align-items-center">
+            <app-crud-button
+                (OnSave)="onSave()"
+                (OnUpdate)="onUpdate()"
+                (OnAuthorize)="onAuthorize()"
+                (OnReject)="onReject()"
+                (OnReset)="onReset()"
+                (OnViewChangeHistory)="onViewChangeHistory()">
+            </app-crud-button>
+        </div>
+    </div>
+</div>
+
+<div class="code-block shadow-sm mt-3">
+    <form [formGroup]="countryForm" (ngSubmit)="onSave()">
+        <div class="row g-3">
+            <!-- Country Name -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">
+                    Country Name <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="countryName"
+                    placeholder="Enter Country Name"
+                    alphaOnly
+                    [class.is-invalid]="isFieldInvalid('countryName')">
+                @if (isFieldInvalid('countryName')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('countryName') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Country Code -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">
+                    Country Code <span class="text-danger">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    formControlName="countryCode"
+                    placeholder="Enter Country Code (e.g., PK, US)"
+                    limitInput="10"
+                    noSpace
+                    [class.is-invalid]="isFieldInvalid('countryCode')">
+                @if (isFieldInvalid('countryCode')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('countryCode') }}
+                    </div>
+                }
+            </div>
+
+            <!-- Status -->
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <label class="form-label">
+                    Status <span class="text-danger">*</span>
+                </label>
+                <select 
+                    class="form-control" 
+                    formControlName="isActive"
+                    [class.is-invalid]="isFieldInvalid('isActive')">
+                    @for (option of statusOptions; track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                    }
+                </select>
+                @if (isFieldInvalid('isActive')) {
+                    <div class="invalid-feedback">
+                        {{ getFieldError('isActive') }}
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+</div>

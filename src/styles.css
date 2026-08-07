@@ -153,6 +153,47 @@ select.form-control {
 .form-group {
     margin-bottom: 1rem;
 }
+
+.form-control:focus {
+    border-color: #024D8A;
+    box-shadow: 0 0 0 3px rgba(2, 77, 138, 0.1);
+}
+
+.form-control.is-invalid {
+    border-color: #dc2626;
+}
+
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.form-control:disabled,
+.form-control[readonly] {
+    background-color: #f1f5f9;
+    cursor: not-allowed;
+}
+
+.invalid-feedback {
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 4px;
+}
+
+select.form-control {
+    appearance: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .code-block {
+        padding: 1rem;
+    }
+}
+
+
+
+
+
 .input-group-append {
     margin-left: -1px;
 }
