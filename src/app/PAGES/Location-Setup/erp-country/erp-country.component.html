@@ -5,14 +5,17 @@
             <h4>{{ headerTitle || 'Country Setup' }}</h4>
         </div>
         <div class="d-flex align-items-center">
-            <app-crud-button
-                (OnSave)="onSave()"
-                (OnUpdate)="onUpdate()"
-                (OnAuthorize)="onAuthorize()"
-                (OnReject)="onReject()"
-                (OnReset)="onReset()"
-                (OnViewChangeHistory)="onViewChangeHistory()">
+               <app-crud-button
+                [showSave]="!isEditMode"
+                [showUpdate]="isEditMode"
+                [showReset]="true"
+                [showBack]="true"
+                (onSave)="onSave()"
+                (onUpdate)="onUpdate()"
+                (onReset)="onReset()"
+                (onBack)="onBack()">
             </app-crud-button>
+
         </div>
     </div>
 </div>

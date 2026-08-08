@@ -9,26 +9,40 @@ import { ConfirmDialog } from '../../shared/components/confirm-dialog/confirm-di
 export class DialogService {
   constructor(private modalService: NgbModal) { }
 
-
+  // ✅ FIXED: Properly typed to return a Promise<boolean>
   public alertBox(message: string): Promise<boolean> {
-    const modalRef = this.modalService.open(AlertModalComponent, { centered: true, keyboard: false, animation: true, backdrop: "static" });
+    const modalRef = this.modalService.open(AlertModalComponent, { 
+      centered: true, 
+      keyboard: false, 
+      animation: true, 
+      backdrop: "static" 
+    });
     modalRef.componentInstance.message = message;
 
+    // Optional: Focus handling
     setTimeout(() => {
-      const modalElement = modalRef.componentInstance.modalContainer.nativeElement;
-      modalElement.focus();
+      if (modalRef.componentInstance.modalContainer) {
+        const modalElement = modalRef.componentInstance.modalContainer.nativeElement;
+        modalElement.focus();
+      }
     }, 0);
 
-    return modalRef.result;
+    // NgbModal.result returns a Promise that resolves when the modal closes
+    return modalRef.result as Promise<boolean>;
   }
 
-  public confirmBox(DispMsg: any, title: string = "") {
+  public confirmBox(DispMsg: any, title: string = ""): Promise<boolean> {
     let modalOptions: NgbModalOptions;
-    modalOptions = { size: 'md', backdrop: 'static', keyboard: false, animation: true, centered: true };
+    modalOptions = { 
+      size: 'md', 
+      backdrop: 'static', 
+      keyboard: false, 
+      animation: true, 
+      centered: true 
+    };
     const modalRef = this.modalService.open(ConfirmDialog, modalOptions);
     modalRef.componentInstance.DispMsg = DispMsg;
     modalRef.componentInstance.title = title == "" ? "Alert" : title;
-    return modalRef.result;
+    return modalRef.result as Promise<boolean>;
   }
-
 }

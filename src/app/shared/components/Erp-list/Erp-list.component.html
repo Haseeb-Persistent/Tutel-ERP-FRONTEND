@@ -1,0 +1,68 @@
+<div class="nk-content-body">
+    <div class="nk-block nk-block-lg">
+        <div class="code-block" style="border-radius: 10px;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h4>{{ formTitle }}</h4>
+                </div>
+                <div>
+                    @if (isAddNewVisible) {
+                    <button type="button" class="btn btn-round btn-xs btn-primary ml-1" (click)="addNewSetup()">
+                        <i class="fa-solid fa-plus me-1"></i>
+                        <span>Add New</span>
+                    </button>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block mt-2 pb-2" style="border-radius: 10px;">
+            <div class="row mt-3 justify-content-end">
+                <div class="col-xl-3 col-lg-4 col-md-12">
+                    <div class="d-flex flex-nowrap align-items-center mt-2">
+                        <!-- Radio Filters (Customize as needed) -->
+                    </div>
+                </div>
+                <div class="col-xl-7 col-lg-7 col-md-5">
+                    <div class="input-group searchBar-additional-child">
+                        <input type="text" class="form-control" placeholder="Search...."
+                            [(ngModel)]="requestSearch.keyword" (keydown.enter)="onSearch()">
+                        <button class="btn btn-primary" (click)="onSearch()">
+                            <i class="fa-solid fa-search me-1"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+            <div class="row pt-3 min-table">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            @for (item of gridHeaders(); track $index) {
+                            <th (click)="onSort(item)" style="cursor: pointer;">{{ item }}</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (item of table2.slice((requestSearch.pageNumber - 1) * requestSearch.pageSize,
+                        requestSearch.pageNumber * requestSearch.pageSize); track $index) {
+                        <tr>
+                            <td>
+                                <button class="btn btn-xs btn-primary" 
+                                    (click)="onRowClick(item['countryId'] || item['CountryId'])">
+                                    Select
+                                </button>
+                            </td>
+                            @for (column of gridColumns(); track column) {
+                            <td>{{ item[column] }}</td>
+                            }
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -9,6 +9,7 @@ import { filter, map, take } from 'rxjs';
 import { CompanyRoute } from './PAGES/COMPANY_SETUP/erp-company-setup/Company.route';
 import { UserRoute } from './PAGES/USER_SETUP/User.route';
 import { LocationRoute } from './PAGES/Location-Setup/location.route';
+import { ErpList } from './shared/components/Erp-list/Erp-list.component';
 
 export const routes: Routes = [
   // Default redirect
@@ -42,24 +43,26 @@ export const routes: Routes = [
     path: 'app',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
-    children: [
-      // Dashboard Home
-      {
-        path: 'dashboard',
-        loadComponent: () => import('./PAGES/erp-dashboard/erp-dashboard.component')
-          .then(m => m.ErpDashboardComponent)
-      },
-      ...CompanyRoute,
-      ...UserRoute,
-      ...LocationRoute,
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      {
-        path: 'pageNotFound',
-        loadComponent: () => import('./shared/components/not-found/not-found.component')
-          .then(m => m.NotFoundComponent)
-      },
-      { path: '**', redirectTo: 'pageNotFound' }
-    ]
+  children: [
+  // Dashboard Home
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./PAGES/erp-dashboard/erp-dashboard.component')
+      .then(m => m.ErpDashboardComponent)
+  },
+  ...CompanyRoute,
+  ...UserRoute,
+  ...LocationRoute, 
+  
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  
+  {
+    path: 'pageNotFound',
+    loadComponent: () => import('./shared/components/not-found/not-found.component')
+      .then(m => m.NotFoundComponent)
+  },
+  { path: '**', redirectTo: 'pageNotFound' }
+]
   },
   {
     path: 'dashboard',

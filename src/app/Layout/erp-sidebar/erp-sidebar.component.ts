@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { Menu } from '../../model/menu.model';
 import { MenuService } from '../../core/services/menu.service';
 import { FormsModule } from '@angular/forms';
+import { Menu } from '../../core/models/menu.model';
 
 @Component({
   selector: 'app-erp-sidebar',
@@ -59,23 +59,27 @@ export class ErpSidebarComponent implements OnInit {
       }
     });
   }
+// In erp-sidebar.component.ts
+goto(menu: Menu) {
 
-  goto(menu: Menu) {
-    if (menu.children && menu.children.length > 0) {
-      menu.expanded = !menu.expanded;
-      return;
-    }
-    this.activeMenu = menu;
-    this.router.navigate(
-      ['/app', ...menu.route.split('/').filter(Boolean)],
-      {
-        queryParams: {
-          f: menu.menuId,
-          formTitle: menu.menuName
-        }
-      }
-    );
+  
+  if (menu.children && menu.children.length > 0) {
+    menu.expanded = !menu.expanded;
+    return;
   }
+  this.activeMenu = menu;
+  
+  // ✅ Navigate to the Dynamic List View (Grid)
+  this.router.navigate(
+    [`app/ErpList/${menu.menuId}`], // Changed: /app/FrmList/Country
+    {
+      queryParams: {
+        f: menu.menuId,
+        formTitle: menu.menuName
+      }
+    }
+  );
+}
 
   toggle(menu: Menu) {
     menu.expanded = !menu.expanded;
