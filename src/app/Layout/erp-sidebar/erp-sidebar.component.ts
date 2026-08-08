@@ -59,28 +59,26 @@ export class ErpSidebarComponent implements OnInit {
       }
     });
   }
-// In erp-sidebar.component.ts
 goto(menu: Menu) {
-
-  
   if (menu.children && menu.children.length > 0) {
     menu.expanded = !menu.expanded;
     return;
   }
   this.activeMenu = menu;
   
-  // ✅ Navigate to the Dynamic List View (Grid)
+  const formName = menu.route?.split('/').pop()
+
   this.router.navigate(
-    [`app/ErpList/${menu.menuId}`], // Changed: /app/FrmList/Country
+    [`/app/ErpList/${formName}`],  
     {
       queryParams: {
-        f: menu.menuId,
-        formTitle: menu.menuName
+        formTitle: menu.menuName,
+        formRoute: menu.route,
+        menuId: menu.menuId          
       }
     }
   );
 }
-
   toggle(menu: Menu) {
     menu.expanded = !menu.expanded;
   }

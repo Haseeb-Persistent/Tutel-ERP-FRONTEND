@@ -1,4 +1,4 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, signal, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,11 +11,12 @@ import { GridService } from '../../../core/services/grid.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './Erp-list.component.html',
 })
-export class ErpList implements OnInit {
+export class ErpList implements OnInit, OnChanges { // ✅ Add OnChanges
   table2: any[] = [];
   totalRecords = 0;
   formTitle: string = '';
   formId: string = '';
+  formName: string = '';
   table1: any = {};
   Route: string = '';
   allData: any[] = [];
@@ -28,32 +29,62 @@ export class ErpList implements OnInit {
     pageSize: 50,
     keyword: '',
   };
-  
+
   gridHeaders = signal<string[]>([]);
   gridColumns = signal<string[]>([]);
 
+  // ✅ Store the subscription so we can clean it up
+  private paramSubscription: any;
+  private querySubscription: any;
+
   constructor(
-    private gridService: GridService, // ✅ Inject Generic Service
+    private gridService: GridService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private dialogService: DialogService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.activatedRoute.paramMap.subscribe((params) => {
-      this.formId = params.get('formId') || 'Country';
+    // ✅ Subscribe to route changes once in ngOnInit
+    this.paramSubscription = this.activatedRoute.paramMap.subscribe((params) => {
+      this.formName = params.get('formName') || 'Country';
+      this.formId = this.formName;
+      
+      // ✅ IMPORTANT: Fetch data immediately whenever the param changes!
+      this.loadPageData();
     });
 
-    this.activatedRoute.queryParams.subscribe((params) => {
-      this.formTitle = params['formTitle'] || `${this.formId} Setup`;
-    });
+    this.querySubscription = this.activatedRoute.queryParams.subscribe((params) => {
+      this.formTitle = params['formTitle'] || `${this.formName} Setup`;
+      const dynamicRoute = params['formRoute'] || '/location/country';
 
-    this.getListData();
+      this.table1 = {
+        insert_allowed: 1,
+        link_form: dynamicRoute,
+        form_id: this.formId
+      };
+      this.Route = this.table1.link_form;
+      this.isAddNewVisible = true;
+    });
   }
 
-  getListData() {
-    // ✅ Call the generic service with the formId
-    this.gridService.getGridData(this.formId).subscribe({
+  // ✅ Add ngOnChanges to detect when the route parameter changes
+  ngOnChanges(changes: SimpleChanges) {
+    // If formName changes, reload data
+    if (changes['formName'] && !changes['formName'].firstChange) {
+      this.loadPageData();
+    }
+  }
+
+  // ✅ New method to handle data fetching
+  loadPageData() {
+    // Clear old data to prevent showing stale data
+    this.table2 = [];
+    this.allData = [];
+    this.gridColumns.set([]);
+    this.gridHeaders.set([]);
+    
+    this.gridService.getGridData(this.formName).subscribe({
       next: (res: any) => {
         if (!res || !Array.isArray(res)) {
           this.table2 = [];
@@ -61,13 +92,11 @@ export class ErpList implements OnInit {
           return;
         }
 
-        // Simulate form info for permissions
         this.table1 = {
           insert_allowed: 1,
-          link_form: 'erp-country', // You can make this dynamic too!
+          link_form: this.Route || '/location/country',
           form_id: this.formId
         };
-        this.Route = this.table1.link_form;
         this.isAddNewVisible = true;
 
         const allRows = res || [];
@@ -91,15 +120,21 @@ export class ErpList implements OnInit {
     });
   }
 
-  addNewSetup() { debugger
-    this.router.navigate([`/app${this.Route}`], {
-      queryParams: { f: this.formId, formTitle: this.formTitle }
+  // ✅ Clean up subscriptions when component is destroyed
+  ngOnDestroy() {
+    if (this.paramSubscription) this.paramSubscription.unsubscribe();
+    if (this.querySubscription) this.querySubscription.unsubscribe();
+  }
+
+  addNewSetup() {
+    this.router.navigate([`/app/${this.Route}`], {
+      queryParams: { f: this.formName, formTitle: this.formTitle }
     });
   }
 
   onRowClick(RowID: string) {
     this.router.navigate([`/app/${this.Route}`], {
-      queryParams: { f: this.formId, id: RowID, formTitle: this.formTitle }
+      queryParams: { f: this.formName, id: RowID, formTitle: this.formTitle }
     });
   }
 

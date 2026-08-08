@@ -173,13 +173,14 @@ loadForEdit(rowId: string): void {
   onViewChangeHistory(): void {
     console.log('View change history');
   }
-
- onBack(): void {
-  this._router.navigate([`/app/FrmList/${this.formId}`], {
-    queryParams: { formTitle: this.headerTitle }
+onBack(): void {
+  this._router.navigate([`/app/ErpList/${this.formId}`], {
+    queryParams: { 
+      formTitle: this.headerTitle,
+      formRoute: '/location/country'
+    }
   });
 }
-
   private markAllFieldsTouched(): void {
     Object.keys(this.countryForm.controls).forEach(key => {
       const control = this.countryForm.get(key);

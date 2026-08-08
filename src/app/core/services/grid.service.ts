@@ -32,7 +32,7 @@ export class GridService {
    * @returns Observable of a dynamic object
    */
   getRecordById(formName: string, id: number): Observable<any> {
-    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/record/${formName}/${id}`).pipe(
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/Country/${id}`).pipe(
       map(res => res.data)
     );
   }

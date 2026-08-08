@@ -1,4 +1,3 @@
-// app.routes.ts
 import { Router, Routes } from '@angular/router';
 import { ErpLoginComponent } from './PAGES/Authentication/erp-login/erp-login.component';
 import { MainLayoutComponent } from './Layout/main-layout/main-layout.component';
@@ -43,27 +42,34 @@ export const routes: Routes = [
     path: 'app',
     component: MainLayoutComponent,
     canActivate: [AuthGuard],
-  children: [
-  // Dashboard Home
-  {
-    path: 'dashboard',
-    loadComponent: () => import('./PAGES/erp-dashboard/erp-dashboard.component')
-      .then(m => m.ErpDashboardComponent)
+    children: [
+      // Dashboard
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./PAGES/erp-dashboard/erp-dashboard.component')
+          .then(m => m.ErpDashboardComponent)
+      },
+      
+   { 
+    path: 'ErpList/:formName', 
+    component: ErpList 
   },
-  ...CompanyRoute,
-  ...UserRoute,
-  ...LocationRoute, 
+
+      ...LocationRoute,
+      ...CompanyRoute,
+      ...UserRoute,
+
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { 
+        path: 'pageNotFound',
+        loadComponent: () => import('./shared/components/not-found/not-found.component')
+          .then(m => m.NotFoundComponent)
+      },
+      { path: '**', redirectTo: 'pageNotFound' }
+    ]
+  },
   
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  
-  {
-    path: 'pageNotFound',
-    loadComponent: () => import('./shared/components/not-found/not-found.component')
-      .then(m => m.NotFoundComponent)
-  },
-  { path: '**', redirectTo: 'pageNotFound' }
-]
-  },
+  // Extra redirects
   {
     path: 'dashboard',
     redirectTo: 'app/dashboard',
