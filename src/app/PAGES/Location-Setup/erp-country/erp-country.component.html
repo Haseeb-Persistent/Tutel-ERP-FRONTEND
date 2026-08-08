@@ -1,4 +1,3 @@
-<!-- erp-country.component.html -->
 <div class="code-block">
     <div class="d-flex align-items-center justify-content-between">
         <div>
@@ -34,7 +33,10 @@
                     formControlName="countryName"
                     placeholder="Enter Country Name"
                     alphaOnly
-                    [class.is-invalid]="isFieldInvalid('countryName')">
+                    (input)="onFieldChange('countryName')"
+                    [class.is-invalid]="isFieldInvalid('countryName')"
+                    [class.is-valid]="f['countryName'].valid && (f['countryName'].touched || submitted) && !hasFieldError('countryName')">
+                
                 @if (isFieldInvalid('countryName')) {
                     <div class="invalid-feedback">
                         {{ getFieldError('countryName') }}
@@ -54,7 +56,10 @@
                     placeholder="Enter Country Code (e.g., PK, US)"
                     limitInput="10"
                     noSpace
-                    [class.is-invalid]="isFieldInvalid('countryCode')">
+                    (input)="onFieldChange('countryCode')"
+                    [class.is-invalid]="isFieldInvalid('countryCode')"
+                    [class.is-valid]="f['countryCode'].valid && (f['countryCode'].touched || submitted) && !hasFieldError('countryCode')">
+                 
                 @if (isFieldInvalid('countryCode')) {
                     <div class="invalid-feedback">
                         {{ getFieldError('countryCode') }}
@@ -70,7 +75,9 @@
                 <select 
                     class="form-control" 
                     formControlName="isActive"
-                    [class.is-invalid]="isFieldInvalid('isActive')">
+                    (change)="onFieldChange('isActive')"
+                    [class.is-invalid]="isFieldInvalid('isActive')"
+                    [class.is-valid]="f['isActive'].valid && (f['isActive'].touched || submitted) && !hasFieldError('isActive')">
                     @for (option of statusOptions; track option.value) {
                         <option [value]="option.value">{{ option.label }}</option>
                     }

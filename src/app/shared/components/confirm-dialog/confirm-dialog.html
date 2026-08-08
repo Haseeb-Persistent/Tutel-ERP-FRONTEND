@@ -1,17 +1,11 @@
 <div class="Alert-section-back">
-    <div class="section">
-        <div class="section-content">
-            <p class="Alert-Text">{{title}}</p>
-        </div>
+  <div class="DisclaimerBodyContent DisclaimerBodyContent-child">
+    <div class="d-flex pt-1 pb-1">
+      <p class="ml-1"><span>{{ DispMsg }}</span></p>
     </div>
-    <div class="DisclaimerBodyContent DisclaimerBodyContent-child ">
-        <div class="d-flex pt-1 pb-1">
-            <span><img src="assets/icon/AccountLocked-alert.svg"></span>
-            <p class="ml-1"> <span> {{ DispMsg }}</span> </p>
-        </div>
-        <div class="ml-1 d-flex alert-btns">
-            <button type="button" class="btn btn-logout-child-one" (click)="accept()">Yes</button>
-            <button type="button" class="btn btn-logout-child-two ml-1" (click)="decline()">No</button>
-        </div>
+    <div class="gx-4 d-flex justify-content-center align-items-center pt-2 pb-2 gap-2">
+      <button  class="btn btn-primary btn-xs" (click)="accept()">Yes</button>
+      <button  class="btn btn-danger btn-xs" (click)="decline()">No</button>
     </div>
+  </div>
 </div>

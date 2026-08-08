@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from '../../../core/services/DialogService';
-import { GridService } from '../../../core/services/grid.service'; // ✅ Generic Service
+import { GridService } from '../../../core/services/grid.service';
 
 @Component({
   selector: 'app-erp-list',
@@ -26,31 +26,24 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
 
   requestSearch = {
     pageNumber: 1,
-    pageSize: 50,
+    pageSize: 10, // Changed default to 10 for pagination testing
     keyword: '',
   };
 
   gridHeaders = signal<string[]>([]);
   gridColumns = signal<string[]>([]);
 
-  // ✅ Store subscriptions to clean up
   private paramSubscription: any;
   private querySubscription: any;
 
   constructor(
-    private gridService: GridService, // ✅ Inject Generic Service
+    private gridService: GridService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private dialogService: DialogService
   ) { }
 
   ngOnInit() {
-    // Prevent direct access without formName
-    if (!this.formName || !this.formId) {
-      this.router.navigate([`/app/pageNotFound`]);
-      return;
-    }
-
     this.paramSubscription = this.activatedRoute.paramMap.subscribe((params) => {
       this.formName = params.get('formName') || 'Dashboard';
       this.formId = this.formName;
@@ -59,8 +52,7 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
 
     this.querySubscription = this.activatedRoute.queryParams.subscribe((params) => {
       this.formTitle = params['formTitle'] || `${this.formName} Setup`;
-      const dynamicRoute = params['formRoute'] || '/location/country';
-
+      const dynamicRoute = params['formRoute'];
       this.table1 = {
         insert_allowed: 1,
         link_form: dynamicRoute,
@@ -83,7 +75,6 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
     this.gridColumns.set([]);
     this.gridHeaders.set([]);
     
-    // ✅ Call the generic GridService
     this.gridService.getGridData(this.formName).subscribe({
       next: (res: any) => {
         if (!res || !Array.isArray(res)) {
@@ -102,9 +93,8 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
         const allRows = res || [];
         this.allData = allRows;
 
-        // Dynamically generate columns
         if (allRows.length > 0) {
-          const hideThese = ['rowid', 'Maker', 'Maker Date', 'Authorizer', 'Authorizer Date', 'RCSTATUS'];
+          const hideThese = ['rowid'];
           const allKeys = Object.keys(allRows[0]);
           this.gridColumns.set(allKeys.filter(key => !hideThese.includes(key)));
           this.gridHeaders.set([...this.gridColumns()]);
@@ -112,6 +102,9 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
 
         this.table2 = allRows;
         this.totalRecords = this.table2.length;
+        
+        // Reset to page 1 when data reloads
+        this.requestSearch.pageNumber = 1;
       },
       error: (err) => {
         const Message = err?.error?.message || 'Error loading data';
@@ -125,18 +118,49 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
     if (this.querySubscription) this.querySubscription.unsubscribe();
   }
 
+  // ✅ GETTER: Calculate total pages dynamically
+  get totalPages(): number {
+    return Math.ceil(this.totalRecords / this.requestSearch.pageSize) || 1;
+  }
+
+  // ✅ ADD NEW SETUP
   addNewSetup() {
     this.router.navigate([`/app/${this.Route}`], {
       queryParams: { f: this.formName, formTitle: this.formTitle }
     });
   }
 
-  onRowClick(RowID: string) {
+  // ✅ ROW CLICK (Edit / View)
+  onRowClick(rowId: string) {
     this.router.navigate([`/app/${this.Route}`], {
-      queryParams: { f: this.formName, id: RowID, formTitle: this.formTitle }
+      queryParams: { 
+        f: this.formName, 
+        id: rowId,         
+        formTitle: this.formTitle 
+      }
     });
   }
 
+  // ✅ DELETE RECORD
+  onDelete(rowId: string) {
+    this.dialogService.confirmBox('Are you sure you want to delete this record?').then((confirmed) => {
+      if (!confirmed) return;
+      
+      const id = parseInt(rowId, 10);
+      this.gridService.deleteRecord(this.formName, id).subscribe({
+        next: () => {
+          this.dialogService.alertBox(`Record deleted successfully.`);
+          this.loadPageData(); 
+        },
+        error: (err) => {
+          const message = err?.error?.message || 'Error deleting record.';
+          this.dialogService.alertBox(message);
+        }
+      });
+    });
+  }
+
+  // ✅ SEARCH
   onSearch() { 
     const keyword = this.requestSearch.keyword?.trim().toLowerCase() || '';
     if (!keyword) {
@@ -153,6 +177,7 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
     this.requestSearch.pageNumber = 1;
   }
 
+  // ✅ SORT
   onSort(column: string) {
     if (this.sortColumn === column) {
       this.isAsc = !this.isAsc;
@@ -169,6 +194,11 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
       if (valA > valB) return this.isAsc ? 1 : -1;
       return 0;
     });
+  }
+
+  onPageSizeChange(event: any) {
+    this.requestSearch.pageSize = parseInt(event.target.value, 10);
+    this.requestSearch.pageNumber = 1; // Reset to page 1
   }
 
   onBack() {

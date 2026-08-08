@@ -5,10 +5,10 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { inject } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
 import { filter, map, take } from 'rxjs';
-import { CompanyRoute } from './PAGES/COMPANY_SETUP/erp-company-setup/Company.route';
 import { UserRoute } from './PAGES/USER_SETUP/User.route';
 import { LocationRoute } from './PAGES/Location-Setup/location.route';
 import { ErpList } from './shared/components/Erp-list/Erp-list.component';
+import { CompanyRoute } from './PAGES/COMPANY_SETUP/Company.route';
 
 export const routes: Routes = [
   // Default redirect

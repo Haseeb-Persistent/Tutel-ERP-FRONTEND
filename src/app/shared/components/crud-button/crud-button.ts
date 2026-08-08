@@ -32,31 +32,19 @@ export class CrudButton {
 
   // --- Button Click Handlers ---
   handleSave() {
-    this.dialog.alertBox("Are you sure you want to save this record?").then((result) => {
-      if (result) {
         this.onSave.emit();
       }
-    });
-  }
 
   handleUpdate() {
-    this.dialog.alertBox("Are you sure you want to update this record?").then((result) => {
-      if (result) {
         this.onUpdate.emit();
-      }
-    });
   }
 
   // ✅ FIXED: Now subscribes correctly to the Promise
   handleReset() {
-    this.dialog.alertBox("Are you sure you want to reset this record?").then((result) => {
-      if (result) {
         this.onReset.emit();
-      }
-    });
   }
 
   handleBack() {
-    this.onBack.emit();
+    window.history.back();
   }
 }

@@ -26,12 +26,30 @@ export class GridService {
   // ─── SINGLE RECORD ──────────────────────────────────────────────────
   // URL: /api/{formName}/record/{id}
   // Example: /api/Country/record/5
-  getRecordById(formName: string, id: number): Observable<any> {
-    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/${formName}/record/${id}`).pipe(
-      map(res => res.data)
-    );
-  }
+// ─── SINGLE RECORD ──────────────────────────────────────────────────
+// URL: /api/{formName}/record/{id}
+// Example: /api/Country/record/5
+// ─── SINGLE RECORD ──────────────────────────────────────────────────
+getRecordById(formName: string, rowId: string): Observable<any> {
+  const id = parseInt(rowId, 10);
+  return this.http.get<ApiResponse<any[]>>(`${this.baseUrl}/${formName}/record/${id}`).pipe(
+    // ✅ FIX: Extract the first item from the array
+    map(res => {
+      if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+        return res.data[0]; // Return the object, not the array
+      }
+      return null;
+    })
+  );
+}
 
+GettAllOptions(formName: string, rowId: string): Observable<any> {
+  const id = parseInt(rowId, 10);
+  return this.http.get<ApiResponse<any>>(`${this.baseUrl}/${formName}/record/${id}`).pipe(
+    // ✅ Extract the data object directly
+    map(res => res.data)
+  );
+}
   // ─── INSERT RECORD ──────────────────────────────────────────────────
   // URL: /api/{formName}/insertRecord
   // Example: /api/Country/insertRecord

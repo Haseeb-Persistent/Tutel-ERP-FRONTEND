@@ -159,13 +159,6 @@ select.form-control {
     box-shadow: 0 0 0 3px rgba(2, 77, 138, 0.1);
 }
 
-.form-control.is-invalid {
-    border-color: #dc2626;
-}
-
-.form-control.is-invalid:focus {
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-}
 
 .form-control:disabled,
 .form-control[readonly] {
@@ -173,15 +166,61 @@ select.form-control {
     cursor: not-allowed;
 }
 
-.invalid-feedback {
-    font-size: 12px;
-    color: #dc2626;
-    margin-top: 4px;
-}
+
 
 select.form-control {
     appearance: auto;
 }
+
+  /* erp-login.component.css */
+.invalid-feedback {
+  display: block !important;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #dc3545;
+}
+
+.invalid-feedback .d-block {
+  display: block !important;
+}
+
+.form-control-wrap {
+  position: relative;
+}
+
+/* Only show error icon (X), remove success icon (checkmark) */
+.form-control.is-invalid {
+  border-color: #dc3545 !important;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+/* Remove the valid/checkmark icon completely */
+.form-control.is-valid {
+  background-image: none !important;
+  padding-right: 0.75rem; /* Reset padding */
+}
+.invalid-feedback {
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Optional: Keep green border but no icon */
+.form-control.is-valid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-control.is-invalid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -268,19 +307,7 @@ select.form-control {
     }
   /* Form css started */
   
-  .Alert-section-back {
-    background-color: #F2F2F2;
-    position: absolute;
-    top: 0%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 300px;
-    background: #CCCCCC;
-    box-sizing: border-box;
-    border-radius: 22px;
-    fill: var(--Gray-6, #F2F2F2);
-    filter: drop-shadow(0px 0px 5.217px rgba(0, 0, 0, 0.10));
-  }
+ 
   /* Form css ended */
   
   .buttonProceed {
@@ -311,33 +338,7 @@ select.form-control {
     border-radius: 10px;
   }
   
-  .Session-Timeout-content {
-    background-color: var( --primary);
-    width: 100%;
-    height: 50px;
-    border-radius: 10px 10px 0px 0px;
-    display: flex;
-    Margin-top: -40px;
-  }
-  
-  .SessionTimeoutBodyContent {
-    width: 100%;
-    border-radius: 0px 0px 10px 10px;
-    background-color: #FFFFFF;
-    padding: 25px;
-  }
-  
-    .SessionTimeoutBodyContent h3 {
-      color: var( --primary);
-      font-size: 24px;
-      font-weight: 600;
-    }
-  
-    .SessionTimeoutBodyContent p {
-      color: #4F4F4F;
-      font-family: Roboto;
-    }
-  
+
   .custom-icon-size {
     font-size: 45px;
   }
@@ -349,19 +350,36 @@ select.form-control {
   /* Alert css ended */
   
 
+.Alert-section-back {
+  background-color: #F2F2F2;
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  background: #CCCCCC;
+  box-sizing: border-box;
+  fill: var(--Gray-6, #F2F2F2);
+}
 
+.Alert-section-back-child {
+  width: 400px;
+}
+
+.Session-Timeout-section-back {
+  position: absolute;
+  top: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 410px;
+  background: #CCCCCC;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
   .Alert-section-back-child {
     width: 400px;
   }
   
-  .Acc-Lock-img {
-    max-width: 42px !important;
-  }
-  
-
-  .DisclaimerBodyContent-child {
-    background-color: #F2F2F2 !important;
-  }
   
   .alert-btns {
     padding-top: 15px;

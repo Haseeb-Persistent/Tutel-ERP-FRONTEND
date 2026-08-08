@@ -36,32 +36,77 @@
 
             <br />
             <div class="row pt-3 min-table">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Select</th>
-                            @for (item of gridHeaders(); track $index) {
-                            <th (click)="onSort(item)" style="cursor: pointer;">{{ item }}</th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (item of table2.slice((requestSearch.pageNumber - 1) * requestSearch.pageSize,
-                        requestSearch.pageNumber * requestSearch.pageSize); track $index) {
-                        <tr>
-                            <td>
-                                <button class="btn btn-xs btn-primary" 
-                                    (click)="onRowClick(item['countryId'] || item['CountryId'])">
-                                    Select
-                                </button>
-                            </td>
-                            @for (column of gridColumns(); track column) {
-                            <td>{{ item[column] }}</td>
-                            }
-                        </tr>
+             <div class="table-responsive">
+    <table class="table mb-0">
+        <!-- Light Grey Header with Dark Text -->
+        <thead style="background-color: #f1f3f5; color: #495057; border-bottom: 2px solid #dee2e6;">
+            <tr>
+                <!-- Row Number -->
+                <th class="ps-4" style="width: 60px; font-weight: 700; text-transform: uppercase;">#</th>
+                
+                <!-- Dynamic Columns -->
+                @for (item of gridHeaders(); track $index) {
+                <th (click)="onSort(item)" style="cursor: pointer; font-weight: 700; text-transform: uppercase;">
+                    {{ item }}
+                </th>
+                }
+
+                <!-- Action Column -->
+                <th class="text-center" style="width: 130px; font-weight: 700; text-transform: uppercase;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of table2.slice((requestSearch.pageNumber - 1) * requestSearch.pageSize,
+            requestSearch.pageNumber * requestSearch.pageSize); track $index) {
+            <!-- Zebra Striping (Alternating grey) -->
+            <tr [class]="$index % 2 === 1 ? 'table-light' : ''">
+                <!-- Row Number -->
+                <td class="ps-4 fw-bold text-muted">
+                    {{ (requestSearch.pageNumber - 1) * requestSearch.pageSize + $index + 1 }}
+                </td>
+
+                <!-- Dynamic Data -->
+                @for (column of gridColumns(); track column) {
+                <td>
+                    <!-- Automatically render Badges for 'active' or 'status' -->
+                    @if (column.toLowerCase().includes('active') || column.toLowerCase().includes('status')) {
+                        @if (item[column] === true || item[column] === 'Active' || item[column] === 'active' || item[column] === 1) {
+                            <span class="badge bg-success-subtle text-success rounded-pill px-3">Active</span>
+                        } @else {
+                            <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Inactive</span>
                         }
-                    </tbody>
-                </table>
+                    } @else {
+                        {{ item[column] }}
+                    }
+                </td>
+                }
+
+                <!-- Actions (Plain Icons) -->
+                <td class="text-center ">
+                    <!-- View Icon -->
+                    <button class="btn" title="View" (click)="onRowClick(item[gridColumns()[0]])">
+                        <i class="fa-regular fa-edit text-primary" style="font-size: 14px;"></i>
+                    </button>
+                    <!-- Delete Icon -->
+                    <button  class="btn" title="Delete" (click)="onDelete(item[gridColumns()[0]])">
+                        <i class="fa-regular fa-trash-can text-danger" style="font-size: 14px;"></i>
+                    </button>
+                </td>
+            </tr>
+            }
+
+            <!-- Empty State -->
+            @if (table2.length === 0) {
+            <tr>
+                <td [attr.colspan]="gridHeaders().length + 2" class="text-center py-4 text-muted">
+                    <i class="fa-solid fa-inbox fs-3 d-block mb-2"></i>
+                    No records found.
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
             </div>
         </div>
     </div>

@@ -1,0 +1,34 @@
+/* ─── HEADER (Light Grey, Dark Text, Uppercase) ─────────────────────── */
+thead {
+    background-color: #0080ff !important;
+    color: #000000 !important;
+}
+
+thead th {
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    font-size: 13px !important;
+}
+
+/* ─── ZEBRA STRIPING (Alternating rows) ────────────────────────────── */
+.table-light {
+    background-color: #f8f9fa !important;
+}
+
+/* ─── CLEAN ICON BUTTONS (No background, No border) ────────────────── */
+.btn-icon {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 6px !important;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.btn-icon:hover i {
+    color: #074888 !important;
+}
+
+.btn-icon i {
+    font-size: 14px !important;
+    color: #6c757d !important;
+}
