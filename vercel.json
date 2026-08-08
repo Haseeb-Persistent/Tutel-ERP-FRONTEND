@@ -1,25 +1,10 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/erp-front",
-  "installCommand": "npm install --legacy-peer-deps",
-  "framework": null,
+  "outputDirectory": "dist/tutel-erp-frontend/browser",
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/api/main"
-    }
-  ],
-  "functions": {
-    "api/main.js": {
-      "memory": 1024,
-      "maxDuration": 10,
-      "includeFiles": "dist/erp-front/**"
-    }
-  },
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/api/main"
+      "destination": "/index.html"
     }
   ]
 }
