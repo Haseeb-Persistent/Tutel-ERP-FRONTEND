@@ -70,8 +70,6 @@ export class ErpCountryComponent implements OnInit {
   loadForEdit(rowId: string): void {
     this.isLoading = true;
     const id = parseInt(rowId, 10);
-    
-    // ✅ Use Generic Service: getRecordById(formName, id)
     this.gridService.getRecordById(this.formId, id)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
