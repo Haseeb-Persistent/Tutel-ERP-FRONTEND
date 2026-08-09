@@ -37,7 +37,6 @@ export const routes: Routes = [
     ]
   },
 
-  // Main App Layout with Sidebar & Header
   {
     path: 'app',
     component: MainLayoutComponent,
@@ -69,7 +68,7 @@ export const routes: Routes = [
     ]
   },
   
-  // Extra redirects
+  
   {
     path: 'dashboard',
     redirectTo: 'app/dashboard',

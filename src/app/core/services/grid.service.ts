@@ -9,59 +9,53 @@ import { ApiResponse } from '../models/ApiResponce';
   providedIn: 'root'
 })
 export class GridService {
-  // ✅ Points to your CountryController which hosts the dynamic endpoints
+  // ✅ Base API URL
   private baseUrl = `${environment.apiUrl}`;
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * ✅ UNIVERSAL METHOD: Fetch Grid Data for ANY form
-   * @param formName - The entity name (e.g., 'Country', 'Company', 'User')
-   * @returns Observable of dynamic array
-   */
+  // ─── GRID DATA ──────────────────────────────────────────────────────
+  // URL: /api/{formName}/grid/{formName}
+  // Example: /api/Country/grid/Country
   getGridData(formName: string): Observable<any[]> {
-    return this.http.get<ApiResponse<any[]>>(`${this.baseUrl}/DynamicGrid/${formName}`).pipe(
+    return this.http.get<ApiResponse<any[]>>(`${this.baseUrl}/${formName}/grid/${formName}`).pipe(
       map(res => res.data)
     );
   }
 
-  /**
-   * ✅ UNIVERSAL METHOD: Fetch a Single Record by ID for ANY form
-   * @param formName - The entity name (e.g., 'Country', 'Company', 'User')
-   * @param id - The record ID
-   * @returns Observable of a dynamic object
-   */
+  // ─── SINGLE RECORD ──────────────────────────────────────────────────
+  // URL: /api/{formName}/record/{id}
+  // Example: /api/Country/record/5
   getRecordById(formName: string, id: number): Observable<any> {
-    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/Country/${id}`).pipe(
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/${formName}/record/${id}`).pipe(
       map(res => res.data)
     );
   }
 
-  /**
-   * ✅ (Optional) Generic Create Method
-   * If all your forms use the same controller for CRUD, you can make this generic too.
-   */
-  createRecord(formName: string, data: any): Observable<any> {
-    return this.http.post<ApiResponse<any>>(`${this.baseUrl}`, data).pipe(
+  // ─── INSERT RECORD ──────────────────────────────────────────────────
+  // URL: /api/{formName}/insertRecord
+  // Example: /api/Country/insertRecord
+  insertRecord(formName: string, data: any): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/${formName}/insertRecord`, data).pipe(
       map(res => res.data)
     );
   }
 
-  /**
-   * ✅ (Optional) Generic Update Method
-   */
+  // ─── UPDATE RECORD ──────────────────────────────────────────────────
+  // URL: /api/{formName}/updateRecord
+  // Example: /api/Country/updateRecord
   updateRecord(formName: string, data: any): Observable<any> {
-    return this.http.put<ApiResponse<any>>(`${this.baseUrl}`, data).pipe(
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/${formName}/updateRecord`, data).pipe(
       map(res => res.data)
     );
   }
 
-  /**
-   * ✅ (Optional) Generic Delete Method
-   */
-  deleteRecord(formName: string, id: number): Observable<void> {
-    return this.http.delete<ApiResponse<void>>(`${this.baseUrl}/${id}`).pipe(
-      map(res => { return; })
+  // ─── DELETE RECORD ──────────────────────────────────────────────────
+  // URL: /api/{formName}/deleteRecord/{id}
+  // Example: /api/Country/deleteRecord/5
+  deleteRecord(formName: string, id: number): Observable<any> {
+    return this.http.delete<ApiResponse<any>>(`${this.baseUrl}/${formName}/deleteRecord/${id}`).pipe(
+      map(res => res.data)
     );
   }
 }

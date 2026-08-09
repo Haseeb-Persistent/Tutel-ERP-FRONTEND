@@ -1,9 +1,9 @@
-import { Component, signal, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, signal, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from '../../../core/services/DialogService';
-import { GridService } from '../../../core/services/grid.service';
+import { GridService } from '../../../core/services/grid.service'; // ✅ Generic Service
 
 @Component({
   selector: 'app-erp-list',
@@ -11,7 +11,7 @@ import { GridService } from '../../../core/services/grid.service';
   imports: [CommonModule, FormsModule],
   templateUrl: './Erp-list.component.html',
 })
-export class ErpList implements OnInit, OnChanges { // ✅ Add OnChanges
+export class ErpList implements OnInit, OnChanges, OnDestroy {
   table2: any[] = [];
   totalRecords = 0;
   formTitle: string = '';
@@ -33,24 +33,27 @@ export class ErpList implements OnInit, OnChanges { // ✅ Add OnChanges
   gridHeaders = signal<string[]>([]);
   gridColumns = signal<string[]>([]);
 
-  // ✅ Store the subscription so we can clean it up
+  // ✅ Store subscriptions to clean up
   private paramSubscription: any;
   private querySubscription: any;
 
   constructor(
-    private gridService: GridService,
+    private gridService: GridService, // ✅ Inject Generic Service
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private dialogService: DialogService
   ) { }
 
   ngOnInit() {
-    // ✅ Subscribe to route changes once in ngOnInit
+    // Prevent direct access without formName
+    if (!this.formName || !this.formId) {
+      this.router.navigate([`/app/pageNotFound`]);
+      return;
+    }
+
     this.paramSubscription = this.activatedRoute.paramMap.subscribe((params) => {
-      this.formName = params.get('formName') || 'Country';
+      this.formName = params.get('formName') || 'Dashboard';
       this.formId = this.formName;
-      
-      // ✅ IMPORTANT: Fetch data immediately whenever the param changes!
       this.loadPageData();
     });
 
@@ -68,22 +71,19 @@ export class ErpList implements OnInit, OnChanges { // ✅ Add OnChanges
     });
   }
 
-  // ✅ Add ngOnChanges to detect when the route parameter changes
   ngOnChanges(changes: SimpleChanges) {
-    // If formName changes, reload data
     if (changes['formName'] && !changes['formName'].firstChange) {
       this.loadPageData();
     }
   }
 
-  // ✅ New method to handle data fetching
   loadPageData() {
-    // Clear old data to prevent showing stale data
     this.table2 = [];
     this.allData = [];
     this.gridColumns.set([]);
     this.gridHeaders.set([]);
     
+    // ✅ Call the generic GridService
     this.gridService.getGridData(this.formName).subscribe({
       next: (res: any) => {
         if (!res || !Array.isArray(res)) {
@@ -94,7 +94,7 @@ export class ErpList implements OnInit, OnChanges { // ✅ Add OnChanges
 
         this.table1 = {
           insert_allowed: 1,
-          link_form: this.Route || '/location/country',
+          link_form: this.Route,
           form_id: this.formId
         };
         this.isAddNewVisible = true;
@@ -120,7 +120,6 @@ export class ErpList implements OnInit, OnChanges { // ✅ Add OnChanges
     });
   }
 
-  // ✅ Clean up subscriptions when component is destroyed
   ngOnDestroy() {
     if (this.paramSubscription) this.paramSubscription.unsubscribe();
     if (this.querySubscription) this.querySubscription.unsubscribe();
@@ -138,7 +137,7 @@ export class ErpList implements OnInit, OnChanges { // ✅ Add OnChanges
     });
   }
 
-  onSearch() {
+  onSearch() { 
     const keyword = this.requestSearch.keyword?.trim().toLowerCase() || '';
     if (!keyword) {
       this.table2 = [...this.allData];

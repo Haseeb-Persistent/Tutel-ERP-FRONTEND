@@ -10,56 +10,55 @@ import { ApiResponse } from '../models/ApiResponce';
   providedIn: 'root'
 })
 export class CountryService {
-  private apiUrl = `${environment.apiUrl}/Country`; // Matches [Route("api/[controller]")]
+  private baseUrl = `${environment.apiUrl}/Country`; // Matches [Route("api/[controller]")]
 
   constructor(private http: HttpClient) { }
 
-   getAll(formName: string): Observable<any[]> {
-    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/grid/${formName}`).pipe(
+   getGridData(formName: string): Observable<any[]> {
+    return this.http.get<ApiResponse<any[]>>(`${this.baseUrl}/grid/${formName}`).pipe(
       map(res => res.data)
     );
   }
 
-  getActive(): Observable<Country[]> {
-    return this.http.get<ApiResponse<Country[]>>(`${this.apiUrl}/active`).pipe(
+  // GET: Single Record
+  getRecordById(formName: string, id: number): Observable<any> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/record/${formName}/${id}`).pipe(
       map(res => res.data)
     );
   }
 
-  getById(id: number): Observable<Country> {
-    return this.http.get<ApiResponse<Country>>(`${this.apiUrl}/${id}`).pipe(
+  // POST: Insert
+  insertRecord(formName: string, data: any): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/insert`, data).pipe(
       map(res => res.data)
     );
   }
 
-  checkExists(countryName: string, excludeId?: number): Observable<boolean> {
-    let params = new HttpParams().set('countryName', countryName);
-    if (excludeId !== null && excludeId !== undefined) {
-      params = params.set('excludeId', excludeId.toString());
-    }
-    return this.http.get<ApiResponse<boolean>>(`${this.apiUrl}/check-exists`, { params }).pipe(
+  // PUT: Update
+  updateRecord(formName: string, data: any): Observable<any> {
+    return this.http.put<ApiResponse<any>>(`${this.baseUrl}/update`, data).pipe(
       map(res => res.data)
     );
   }
 
-  create(country: CountryRequest): Observable<Country> {
-    return this.http.post<ApiResponse<Country>>(this.apiUrl, country).pipe(
+  // POST: Reject
+  rejectRecord(formName: string, data: any): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/reject`, data).pipe(
       map(res => res.data)
     );
   }
 
-  update(country: CountryRequest): Observable<Country> {
-    return this.http.put<ApiResponse<Country>>(this.apiUrl, country).pipe(
+  // POST: Authorize
+  authorizeRecord(formName: string, data: any): Observable<any> {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/authorize`, data).pipe(
       map(res => res.data)
     );
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`).pipe(
-      map(res => {
-        // Optional: You can check res.responseCode here if needed
-        return;
-      })
+  // GET: View Changes
+  viewChanges(formName: string, id: number): Observable<any> {
+    return this.http.get<ApiResponse<any>>(`${this.baseUrl}/viewchanges/${id}`).pipe(
+      map(res => res.data)
     );
   }
 }

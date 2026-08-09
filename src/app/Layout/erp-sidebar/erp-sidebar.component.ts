@@ -12,7 +12,7 @@ import { Menu } from '../../core/models/menu.model';
     CommonModule,
     RouterModule,
     FormsModule,
-],
+  ],
   templateUrl: './erp-sidebar.component.html',
   styleUrls: ['./erp-sidebar.component.css']
 })
@@ -59,26 +59,28 @@ export class ErpSidebarComponent implements OnInit {
       }
     });
   }
-goto(menu: Menu) {
-  if (menu.children && menu.children.length > 0) {
-    menu.expanded = !menu.expanded;
-    return;
-  }
-  this.activeMenu = menu;
-  
-  const formName = menu.route?.split('/').pop()
 
-  this.router.navigate(
-    [`/app/ErpList/${formName}`],  
-    {
-      queryParams: {
-        formTitle: menu.menuName,
-        formRoute: menu.route,
-        menuId: menu.menuId          
-      }
+  goto(menu: Menu) { 
+    if (menu.children && menu.children.length > 0) {
+      menu.expanded = !menu.expanded;
+      return;
     }
-  );
-}
+    this.activeMenu = menu;
+    
+    const formName = menu.route?.split('/').pop();
+
+    this.router.navigate(
+      [`/app/ErpList/${formName}`],  
+      {
+        queryParams: {
+          formTitle: menu.menuName,
+          formRoute: menu.route,
+          menuId: menu.menuId          
+        }
+      }
+    );
+  }
+
   toggle(menu: Menu) {
     menu.expanded = !menu.expanded;
   }
