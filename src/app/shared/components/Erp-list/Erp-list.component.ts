@@ -1,17 +1,21 @@
-import { Component, signal, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from '../../../core/services/DialogService';
 import { GridService } from '../../../core/services/grid.service';
+import { PaginationComponent } from '../pagination/pagination.component';
 
 @Component({
   selector: 'app-erp-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PaginationComponent],
   templateUrl: './Erp-list.component.html',
+  styleUrls: ['./Erp-list.component.css']
 })
-export class ErpList implements OnInit, OnChanges, OnDestroy {
+export class ErpList implements OnInit, OnDestroy {
+  @ViewChild('tableWrapper') tableWrapper!: ElementRef;
+  
   table2: any[] = [];
   totalRecords = 0;
   formTitle: string = '';
@@ -23,12 +27,14 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
   sortColumn: string = '';
   isAsc: boolean = true;
   isAddNewVisible: boolean = true;
+  isLoading: boolean = false;
 
-  requestSearch = {
-    pageNumber: 1,
-    pageSize: 10, // Changed default to 10 for pagination testing
-    keyword: '',
-  };
+  // Pagination properties
+  pageNumber: number = 1;
+  pageSize: number = 14;
+
+  // Search
+  searchKeyword: string = '';
 
   gridHeaders = signal<string[]>([]);
   gridColumns = signal<string[]>([]);
@@ -63,23 +69,39 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['formName'] && !changes['formName'].firstChange) {
-      this.loadPageData();
-    }
-  }
-
   loadPageData() {
+    this.isLoading = true;
     this.table2 = [];
     this.allData = [];
     this.gridColumns.set([]);
     this.gridHeaders.set([]);
+    this.pageNumber = 1;
     
+    // Call your API service
     this.gridService.getGridData(this.formName).subscribe({
       next: (res: any) => {
-        if (!res || !Array.isArray(res)) {
+        this.isLoading = false;
+        
+        // Handle the response based on your API structure
+        let data = res;
+        
+        // If your API returns data in a specific property
+        if (res && res.data) {
+          data = res.data;
+        } else if (res && res.Table) {
+          data = res.Table;
+        } else if (Array.isArray(res)) {
+          data = res;
+        } else {
+          data = [];
+        }
+
+        if (!data || !Array.isArray(data) || data.length === 0) {
           this.table2 = [];
           this.allData = [];
+          this.totalRecords = 0;
+          this.gridColumns.set([]);
+          this.gridHeaders.set([]);
           return;
         }
 
@@ -90,25 +112,49 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
         };
         this.isAddNewVisible = true;
 
-        const allRows = res || [];
+        const allRows = data;
         this.allData = allRows;
 
         if (allRows.length > 0) {
-          const hideThese = ['rowid'];
           const allKeys = Object.keys(allRows[0]);
-          this.gridColumns.set(allKeys.filter(key => !hideThese.includes(key)));
-          this.gridHeaders.set([...this.gridColumns()]);
+          
+          // Filter out system columns if needed
+          const filteredKeys = allKeys.filter(key => {
+            const lowerKey = key.toLowerCase();
+            // Hide system columns
+            if (lowerKey === 'id' || 
+                lowerKey === 'rowid' || 
+                lowerKey === 'createddate' || 
+                lowerKey === 'created_on' || 
+                lowerKey === 'updated_by' || 
+                lowerKey === 'updated_on' ||
+                lowerKey === 'maker' ||
+                lowerKey === 'maker_date' ||
+                lowerKey === 'authorizer' ||
+                lowerKey === 'authorizer_date' ||
+                lowerKey === 'rcstatus') {
+              return false;
+            }
+            return true;
+          });
+          
+          this.gridColumns.set(filteredKeys);
+          this.gridHeaders.set([...filteredKeys]);
         }
 
         this.table2 = allRows;
         this.totalRecords = this.table2.length;
         
-        // Reset to page 1 when data reloads
-        this.requestSearch.pageNumber = 1;
+        // Reset to first page
+        this.pageNumber = 1;
       },
       error: (err) => {
+        this.isLoading = false;
         const Message = err?.error?.message || 'Error loading data';
         this.dialogService.alertBox(Message);
+        this.table2 = [];
+        this.allData = [];
+        this.totalRecords = 0;
       }
     });
   }
@@ -118,39 +164,48 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
     if (this.querySubscription) this.querySubscription.unsubscribe();
   }
 
-  // ✅ GETTER: Calculate total pages dynamically
-  get totalPages(): number {
-    return Math.ceil(this.totalRecords / this.requestSearch.pageSize) || 1;
+  getCurrentPageData(): any[] {
+    const startIndex = (this.pageNumber - 1) * this.pageSize;
+    const endIndex = Math.min(startIndex + this.pageSize, this.totalRecords);
+    return this.table2.slice(startIndex, endIndex);
   }
 
-  // ✅ ADD NEW SETUP
   addNewSetup() {
     this.router.navigate([`/app/${this.Route}`], {
       queryParams: { f: this.formName, formTitle: this.formTitle }
     });
   }
 
-  // ✅ ROW CLICK (Edit / View)
-  onRowClick(rowId: string) {
+  onRowClick(data: any) {
+    // Try to find the ID field
+    const recordId = data?.recordId || data?.id || data?.RowID || data?.rowid || data?.['Record ID'];
+    if (!recordId) {
+      this.dialogService.alertBox('Record ID not found.');
+      return;
+    }
     this.router.navigate([`/app/${this.Route}`], {
-      queryParams: { 
-        f: this.formName, 
-        id: rowId,         
-        formTitle: this.formTitle 
+      queryParams: {
+        f: this.formName,
+        id: recordId,
+        formTitle: this.formTitle
       }
     });
   }
 
-  // ✅ DELETE RECORD
-  onDelete(rowId: string) {
+  onDelete(recordId: string) {
+    if (!recordId) {
+      this.dialogService.alertBox('Record ID not found.');
+      return;
+    }
+    
     this.dialogService.confirmBox('Are you sure you want to delete this record?').then((confirmed) => {
       if (!confirmed) return;
       
-      const id = parseInt(rowId, 10);
+      const id = typeof recordId === 'string' ? parseInt(recordId, 10) : recordId;
       this.gridService.deleteRecord(this.formName, id).subscribe({
         next: () => {
-          this.dialogService.alertBox(`Record deleted successfully.`);
-          this.loadPageData(); 
+          this.dialogService.alertBox('Record deleted successfully.');
+          this.loadPageData(); // Reload data
         },
         error: (err) => {
           const message = err?.error?.message || 'Error deleting record.';
@@ -160,9 +215,8 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  // ✅ SEARCH
   onSearch() { 
-    const keyword = this.requestSearch.keyword?.trim().toLowerCase() || '';
+    const keyword = this.searchKeyword?.trim().toLowerCase() || '';
     if (!keyword) {
       this.table2 = [...this.allData];
     } else {
@@ -174,10 +228,14 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
       this.table2 = filteredResults.length > 0 ? filteredResults : [...this.allData];
     }
     this.totalRecords = this.table2.length;
-    this.requestSearch.pageNumber = 1;
+    this.pageNumber = 1;
   }
 
-  // ✅ SORT
+  clearSearch() {
+    this.searchKeyword = '';
+    this.onSearch();
+  }
+
   onSort(column: string) {
     if (this.sortColumn === column) {
       this.isAsc = !this.isAsc;
@@ -190,15 +248,25 @@ export class ErpList implements OnInit, OnChanges, OnDestroy {
       let valB = b[column];
       if (valA == null) valA = '';
       if (valB == null) valB = '';
+      if (typeof valA === 'string') valA = valA.toLowerCase();
+      if (typeof valB === 'string') valB = valB.toLowerCase();
       if (valA < valB) return this.isAsc ? -1 : 1;
       if (valA > valB) return this.isAsc ? 1 : -1;
       return 0;
     });
   }
 
-  onPageSizeChange(event: any) {
-    this.requestSearch.pageSize = parseInt(event.target.value, 10);
-    this.requestSearch.pageNumber = 1; // Reset to page 1
+  onPageChange(event: { pageNumber: number; pageSize: number }) {
+    this.pageNumber = event.pageNumber;
+    this.pageSize = event.pageSize;
+    if (this.tableWrapper) {
+      this.tableWrapper.nativeElement.scrollTop = 0;
+    }
+  }
+
+  onPageSizeChange(event: { pageNumber: number; pageSize: number }) {
+    this.pageSize = event.pageSize;
+    this.pageNumber = 1;
   }
 
   onBack() {

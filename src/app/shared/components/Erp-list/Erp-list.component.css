@@ -1,34 +1,265 @@
-/* ─── HEADER (Light Grey, Dark Text, Uppercase) ─────────────────────── */
-thead {
-    background-color: #0080ff !important;
-    color: #000000 !important;
+/* ─── TABLE CONTAINER WITH BOTH SCROLLS ──────────────────────── */
+.table-container {
+    max-height: 400px;
+    max-width: 100%;
+    overflow: auto;
+    position: relative;
 }
 
-thead th {
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    font-size: 13px !important;
+/* ─── TABLE LAYOUT ───────────────────────────────────────────── */
+.table-fixed-header {
+    width: 100%;
+    min-width: max-content; /* Allows horizontal scroll when needed */
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 0;
 }
 
-/* ─── ZEBRA STRIPING (Alternating rows) ────────────────────────────── */
-.table-light {
+/* ─── FIXED HEADER (Sticky for both scrolls) ────────────────── */
+.table-fixed-header thead {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.table-fixed-header thead th {
+    background-color: #deefff !important;
+    color: #024D8A !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    min-width: 100px; /* Minimum width for columns */
+}
+
+/* Last header cell - no border */
+.table-fixed-header thead th:last-child {
+    border-right: none;
+
+}
+
+/* ─── ACTIONS HEADER (Sticky Right) ──────────────────────────── */
+.table-fixed-header thead th:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 30;
+      background-color: #cae4ff !important;
+    min-width: 120px;
+    width: 120px;
+}
+
+/* ─── TABLE BODY ──────────────────────────────────────────────── */
+.table-fixed-header tbody td {
+    vertical-align: middle;
+    font-size: 12px;
+    white-space: nowrap;
+    min-width: 100px;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ─── ZEBRA STRIPING ──────────────────────────────────────────── */
+.table-fixed-header tbody tr:nth-of-type(even) {
     background-color: #f8f9fa !important;
 }
 
-/* ─── CLEAN ICON BUTTONS (No background, No border) ────────────────── */
-.btn-icon {
-    background: transparent !important;
-    border: none !important;
-    padding: 0 6px !important;
-    cursor: pointer;
-    transition: color 0.2s;
+.table-fixed-header tbody tr:nth-of-type(odd) {
+    background-color: #ffffff !important;
 }
 
-.btn-icon:hover i {
-    color: #074888 !important;
+
+
+/* ─── ACTIONS CELL (Sticky Right) ────────────────────────────── */
+.table-fixed-header tbody td:last-child {
+    position: sticky;
+    right: 0;
+    background: inherit;
+    z-index: 15;
+    min-width: 120px;
+    width: 120px;
+    text-align: center;
 }
 
-.btn-icon i {
-    font-size: 14px !important;
-    color: #6c757d !important;
+
+/* ─── BADGE STYLES ────────────────────────────────────────────── */
+.badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+}
+
+.bg-success-subtle {
+    background-color: #d4edda !important;
+    color: #155724 !important;
+}
+
+.bg-danger-subtle {
+    background-color: #f8d7da !important;
+    color: #721c24 !important;
+}
+
+/* ─── CARRIER BADGE ───────────────────────────────────────────── */
+.carrier-badge {
+    background: #e2e8f0;
+    color: #1e293b;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+/* ─── FLIGHT NUMBER ───────────────────────────────────────────── */
+.flight-number {
+    color: #024D8A;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* ─── BUTTON STYLES ───────────────────────────────────────────── */
+.btn-outline-primary {
+    border-color: #e2e8f0;
+    color: #475569;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    background: white;
+}
+
+.btn-outline-primary:hover {
+    background-color: #024D8A;
+    border-color: #024D8A;
+    color: white;
+}
+
+.btn-outline-danger {
+    border-color: #e2e8f0;
+    color: #475569;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    background: white;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* ─── SORT INDICATOR ──────────────────────────────────────────── */
+.sort-icon {
+    margin-left: 4px;
+    font-size: 11px;
+}
+
+/* ─── SCROLLBAR STYLING ───────────────────────────────────────── */
+/* .table-container::-webkit-scrollbar {
+    background: #1460ad;
+
+    width: 15px;
+    height: 15px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #1460ad;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+      background: #1460ad;
+
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+       background: #1460ad;
+
+} */
+
+/* For Firefox */
+.table-container {
+    scrollbar-color: hsl(213, 86%, 51%) #f1f5f9;
+}
+
+/* ─── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .table-container {
+        max-height: 300px;
+    }
+    
+    .table-fixed-header thead th,
+    .table-fixed-header tbody td {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: 80px;
+    }
+    
+    .table-fixed-header thead th:last-child,
+    .table-fixed-header tbody td:last-child {
+        min-width: 90px;
+        width: 90px;
+    }
+}
+
+@media (max-width: 480px) {
+    .table-fixed-header thead th,
+    .table-fixed-header tbody td {
+        font-size: 11px;
+        padding: 6px 10px;
+        min-width: 60px;
+    }
+}
+
+/* ─── PAGINATION CONTAINER ────────────────────────────────────── */
+.pagination-wrapper {
+    padding: 12px 0;
+    border-top: 1px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 0 0 8px 8px;
+}
+
+/* ─── SEARCH BAR ───────────────────────────────────────────────── */
+.searchBar-additional-child .form-control {
+    border-radius: 6px 0 0 6px;
+    border-color: #e2e8f0;
+}
+
+.searchBar-additional-child .btn-primary {
+    border-radius: 0 6px 6px 0;
+    background: #024D8A;
+    border-color: #024D8A;
+}
+
+.searchBar-additional-child .btn-primary:hover {
+    background: #024D8A;
+    border-color: #024D8A;
+}
+
+/* ─── CODE BLOCK ───────────────────────────────────────────────── */
+.code-block {
+    background: white;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.code-block h4 {
+    color: #1e293b;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+/* ─── EMPTY STATE ──────────────────────────────────────────────── */
+.text-muted i.fa-inbox {
+    color: #94a3b8;
+}
+
+/* ─── TABLE WRAPPER SHADOW ────────────────────────────────────── */
+.table-container {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }

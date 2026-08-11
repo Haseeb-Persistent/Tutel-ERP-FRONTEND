@@ -1,5 +1,6 @@
 <div class="nk-content-body">
     <div class="nk-block nk-block-lg">
+        <!-- Header -->
         <div class="code-block" style="border-radius: 10px;">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
@@ -16,98 +17,121 @@
             </div>
         </div>
 
+        <!-- Table Container -->
         <div class="code-block mt-2 pb-2" style="border-radius: 10px;">
+            <!-- Search Bar -->
             <div class="row mt-3 justify-content-end">
-                <div class="col-xl-3 col-lg-4 col-md-12">
-                    <div class="d-flex flex-nowrap align-items-center mt-2">
-                        <!-- Radio Filters (Customize as needed) -->
-                    </div>
-                </div>
                 <div class="col-xl-7 col-lg-7 col-md-5">
                     <div class="input-group searchBar-additional-child">
                         <input type="text" class="form-control" placeholder="Search...."
-                            [(ngModel)]="requestSearch.keyword" (keydown.enter)="onSearch()">
+                            [(ngModel)]="searchKeyword" (keydown.enter)="onSearch()">
                         <button class="btn btn-primary" (click)="onSearch()">
                             <i class="fa-solid fa-search me-1"></i> Search
                         </button>
+                        @if (searchKeyword) {
+                        <button class="btn btn-outline-secondary" (click)="clearSearch()">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                        }
                     </div>
+                </div>
+                <div class="col-xl-5 col-lg-5 col-md-7 text-end">
+                    <span class="text-muted">Total Records: <strong>{{ totalRecords }}</strong></span>
                 </div>
             </div>
 
             <br />
-            <div class="row pt-3 min-table">
-             <div class="table-responsive">
-    <table class="table mb-0">
-        <!-- Light Grey Header with Dark Text -->
-        <thead style="background-color: #f1f3f5; color: #495057; border-bottom: 2px solid #dee2e6;">
-            <tr>
-                <!-- Row Number -->
-                <th class="ps-4" style="width: 60px; font-weight: 700; text-transform: uppercase;">#</th>
-                
-                <!-- Dynamic Columns -->
-                @for (item of gridHeaders(); track $index) {
-                <th (click)="onSort(item)" style="cursor: pointer; font-weight: 700; text-transform: uppercase;">
-                    {{ item }}
-                </th>
-                }
 
-                <!-- Action Column -->
-                <th class="text-center" style="width: 130px; font-weight: 700; text-transform: uppercase;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (item of table2.slice((requestSearch.pageNumber - 1) * requestSearch.pageSize,
-            requestSearch.pageNumber * requestSearch.pageSize); track $index) {
-            <!-- Zebra Striping (Alternating grey) -->
-            <tr [class]="$index % 2 === 1 ? 'table-light' : ''">
-                <!-- Row Number -->
-                <td class="ps-4 fw-bold text-muted">
-                    {{ (requestSearch.pageNumber - 1) * requestSearch.pageSize + $index + 1 }}
-                </td>
-
-                <!-- Dynamic Data -->
-                @for (column of gridColumns(); track column) {
-                <td>
-                    <!-- Automatically render Badges for 'active' or 'status' -->
-                    @if (column.toLowerCase().includes('active') || column.toLowerCase().includes('status')) {
-                        @if (item[column] === true || item[column] === 'Active' || item[column] === 'active' || item[column] === 1) {
-                            <span class="badge bg-success-subtle text-success rounded-pill px-3">Active</span>
-                        } @else {
-                            <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Inactive</span>
-                        }
-                    } @else {
-                        {{ item[column] }}
-                    }
-                </td>
-                }
-
-                <!-- Actions (Plain Icons) -->
-                <td class="text-center ">
-                    <!-- View Icon -->
-                    <button class="btn" title="View" (click)="onRowClick(item[gridColumns()[0]])">
-                        <i class="fa-regular fa-edit text-primary" style="font-size: 14px;"></i>
-                    </button>
-                    <!-- Delete Icon -->
-                    <button  class="btn" title="Delete" (click)="onDelete(item[gridColumns()[0]])">
-                        <i class="fa-regular fa-trash-can text-danger" style="font-size: 14px;"></i>
-                    </button>
-                </td>
-            </tr>
-            }
-
-            <!-- Empty State -->
-            @if (table2.length === 0) {
-            <tr>
-                <td [attr.colspan]="gridHeaders().length + 2" class="text-center py-4 text-muted">
-                    <i class="fa-solid fa-inbox fs-3 d-block mb-2"></i>
-                    No records found.
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            <!-- Loading State -->
+            @if (isLoading) {
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Loading data...</p>
             </div>
+            }
+
+            <!-- Table with Both Horizontal and Vertical Scrolling -->
+            @if (!isLoading) {
+            <div class="row pt-3 min-table">
+                <div class="table-container" #tableWrapper>
+                    <table class="table table-fixed-header mb-0">
+                        <!-- Fixed Header -->
+                        <thead>
+                            <tr>
+                                <!-- Dynamic Columns -->
+                                @for (item of gridHeaders(); track $index) {
+                                <th (click)="onSort(item)" style="cursor: pointer;">
+                                    {{ item }}
+                                    @if (sortColumn === item) {
+                                        <i class="fa-solid sort-icon" [class.fa-arrow-up]="isAsc" [class.fa-arrow-down]="!isAsc"></i>
+                                    }
+                                </th>
+                                }
+                                <!-- Action Column -->
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (item of getCurrentPageData(); track $index) {
+                            <tr>
+                                <!-- Dynamic Data -->
+                                @for (column of gridColumns(); track column) {
+                                <td>
+                                    <!-- Auto-render Badges for status fields -->
+                                    @if (column.toLowerCase().includes('active') || column.toLowerCase().includes('status')) {
+                                        @if (item[column] === true || item[column] === 'Active' || item[column] === 'active' || item[column] === 1 || item[column] === '1') {
+                                            <span class="badge bg-success-subtle text-success rounded-pill px-3">Active</span>
+                                        } @else {
+                                            <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Inactive</span>
+                                        }
+                                    } @else {
+                                        {{ item[column] }}
+                                    }
+                                </td>
+                                }
+                                <!-- Actions (Sticky Right) -->
+                                <td class="text-center actions-cell">
+                                    <button class="btn btn-sm btn-outline-primary me-1" title="Edit" (click)="onRowClick(item)">
+                                        <i class="fa-regular fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Delete" (click)="onDelete(item.recordId || item.id || item.RowID || item.rowid)">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            }
+
+                            <!-- Empty State -->
+                            @if (table2.length === 0) {
+                            <tr>
+                                <td [attr.colspan]="gridHeaders().length + 1" class="text-center py-4 text-muted">
+                                    <i class="fa-solid fa-inbox fs-3 d-block mb-2"></i>
+                                    No records found.
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            }
+
+            <!-- Pagination -->
+            @if (!isLoading && totalRecords > 0) {
+            <div class="row pt-3">
+                <div class="col-12">
+                    <app-pagination
+                        [totalRecords]="totalRecords"
+                        [pageSize]="pageSize"
+                        [pageNumber]="pageNumber"
+                        (pageChange)="onPageChange($event)"
+                        (pageSizeChange)="onPageSizeChange($event)">
+                    </app-pagination>
+                </div>
+            </div>
+            }
         </div>
     </div>
 </div>

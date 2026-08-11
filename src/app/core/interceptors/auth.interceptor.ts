@@ -58,6 +58,7 @@ function handle401Error(
   if (!refreshToken) {
     authService.logout();
     return throwError(() => new Error('No refresh token available'));
+    
   }
 
   if (!isRefreshing) {

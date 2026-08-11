@@ -1,0 +1,69 @@
+@if (pager && pager.pages!.length) {
+<div class="pagination-wrapper">
+  <div class="pagination-left">
+    <span class="info-text">
+      <span>{{ pager.startIndex + 1 }}</span> -
+      <span>{{ pager.endIndex + 1 }}</span>
+      of <span>{{ totalRecords }}</span>
+    </span>
+  </div>
+
+  <div class="pagination-right">
+    <!-- PAGE SIZE SELECT -->
+    <div class="page-size-wrapper">
+      <span class="label-text">Rows per page:</span>
+      <select 
+        class="custom-select"
+        [value]="pageSize"
+        (change)="setPageSize($any($event.target).value)"
+      >
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="500">500</option>
+        <option value="1000">1000</option>
+      </select>
+    </div>
+
+    <!-- NAVIGATION CONTROLS -->
+    <div class="nav-controls">
+      <!-- Previous Button -->
+      <button 
+        type="button" 
+        class="nav-btn" 
+        (click)="setPage(pageNumber - 1)"
+        [disabled]="pageNumber === 1"
+      >
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+
+      <!-- Page Number Input (Bordered & centered) -->
+      <div class="page-input-wrapper">
+        <input 
+          type="number" 
+          class="page-input" 
+          [value]="pageNumber"
+          (change)="setPage($any($event.target).value)"
+          (keydown.enter)="setPage($any($event.target).value)"
+          min="1"
+          [max]="pager.totalPages"
+        >
+        <span class="page-slash">/</span>
+        <span class="page-total">{{ pager.totalPages }}</span>
+      </div>
+
+      <!-- Next Button -->
+      <button 
+        type="button" 
+        class="nav-btn" 
+        (click)="setPage(pageNumber + 1)"
+        [disabled]="pageNumber === pager.totalPages"
+      >
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+}

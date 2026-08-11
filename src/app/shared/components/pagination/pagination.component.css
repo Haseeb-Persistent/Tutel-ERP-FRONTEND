@@ -1,0 +1,154 @@
+/* Main Container */
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-top: 1px solid #e9ecef;
+  background: #ffffff;
+  border-radius: 0 0 8px 8px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Left Text */
+.pagination-left .info-text {
+  font-size: 14px;
+  color: #212529;
+}
+
+.pagination-left .info-text span {
+  font-weight: 500;
+}
+
+/* Right Side Grouping */
+.pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 24px; /* Space between dropdown and pagination controls */
+}
+
+/* Page Size Selector */
+.page-size-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-size-wrapper .label-text {
+  font-size: 14px;
+  color: #495057;
+}
+
+.custom-select {
+  appearance: none;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 6px 24px 6px 12px;
+  font-size: 14px;
+  background: #ffffff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") no-repeat right 10px center;
+  background-size: 12px;
+  color: #212529;
+  cursor: pointer;
+  min-width: 70px;
+  outline: none;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.custom-select:focus {
+  border-color: #0080ff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 128, 255, 0.1);
+}
+
+/* Navigation Controls (Arrows + Input) */
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Arrow Buttons */
+.nav-btn {
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  font-size: 16px;
+  padding: 4px 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover:not(:disabled) {
+  color: #0080ff;
+  background: #f0f7ff;
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* Page Input Area (Matches screenshot 2 exactly) */
+.page-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.page-input {
+  width: 44px;
+  height: 32px;
+  text-align: center;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+  background: #ffffff;
+  outline: none;
+  -moz-appearance: textfield; /* Hide spin buttons */
+}
+
+.page-input::-webkit-inner-spin-button,
+.page-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.page-input:focus {
+  border-color: #0080ff;
+}
+
+.page-slash {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.page-total {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .pagination-wrapper {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .pagination-right {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .page-size-wrapper {
+    width: 100%;
+    justify-content: center;
+  }
+}

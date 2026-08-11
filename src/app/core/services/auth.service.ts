@@ -87,6 +87,7 @@ export class AuthService {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
       return throwError(() => new Error('No refresh token available'));
+      this.router.navigate(['/login']);
     }
 
     const request: RefreshTokenRequest = { refreshToken };
@@ -98,6 +99,7 @@ export class AuthService {
           }
         }),
         catchError(this.handleError)
+
       );
   }
 
