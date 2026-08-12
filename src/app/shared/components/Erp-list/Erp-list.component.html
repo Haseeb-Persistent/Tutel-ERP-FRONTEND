@@ -8,7 +8,7 @@
                 </div>
                 <div>
                     @if (isAddNewVisible) {
-                    <button type="button" class="btn btn-round btn-xs btn-primary ml-1" (click)="addNewSetup()">
+                    <button type="button" class="btn  btn-primary " (click)="addNewSetup()">
                         <i class="fa-solid fa-plus me-1"></i>
                         <span>Add New</span>
                     </button>
@@ -91,12 +91,12 @@
                                 }
                                 <!-- Actions (Sticky Right) -->
                                 <td class="text-center actions-cell">
-                                    <button class="btn btn-sm btn-outline-primary me-1" title="Edit" (click)="onRowClick(item)">
-                                        <i class="fa-regular fa-edit"></i>
+                                    <button class="btn btn-xs btn-primary" title="Edit" (click)="onRowClick(item)">
+                              Select
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" title="Delete" (click)="onDelete(item.recordId || item.id || item.RowID || item.rowid)">
+                                    <!-- <button class="btn btn-sm btn-outline-danger" title="Delete" (click)="onDelete(item.recordId || item.id || item.RowID || item.rowid)">
                                         <i class="fa-regular fa-trash-can"></i>
-                                    </button>
+                                    </button> -->
                                 </td>
                             </tr>
                             }

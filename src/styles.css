@@ -393,8 +393,12 @@ select.form-control {
 
 .btn-primary {
   background-color: #074888 !important;
-  border-radius: 0px !important;
+  border-radius: 7px !important;
   padding: 10px 20px 10px 20px !important;
+}
+.btn-xs {
+border-radius: 5px !important;
+  padding: 6px 17px 6px 17px !important;
 }
 
 .btn {
@@ -408,7 +412,6 @@ select.form-control {
     padding: .4375rem 1.125rem;
     font-size: .8125rem;
     line-height: 1.25rem;
-    border-radius: 0px !important;
 }
 
 

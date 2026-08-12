@@ -23,7 +23,7 @@
 }
 
 .table-fixed-header thead th {
-    background-color: #deefff !important;
+    background-color: #e4ebf1 !important;
     color: #024D8A !important;
     font-weight: 600 !important;
     font-size: 12px !important;
@@ -41,14 +41,6 @@
 }
 
 /* ─── ACTIONS HEADER (Sticky Right) ──────────────────────────── */
-.table-fixed-header thead th:last-child {
-    position: sticky;
-    right: 0;
-    z-index: 30;
-      background-color: #cae4ff !important;
-    min-width: 120px;
-    width: 120px;
-}
 
 /* ─── TABLE BODY ──────────────────────────────────────────────── */
 .table-fixed-header tbody td {
@@ -61,27 +53,9 @@
     text-overflow: ellipsis;
 }
 
-/* ─── ZEBRA STRIPING ──────────────────────────────────────────── */
-.table-fixed-header tbody tr:nth-of-type(even) {
-    background-color: #f8f9fa !important;
-}
-
-.table-fixed-header tbody tr:nth-of-type(odd) {
-    background-color: #ffffff !important;
-}
 
 
 
-/* ─── ACTIONS CELL (Sticky Right) ────────────────────────────── */
-.table-fixed-header tbody td:last-child {
-    position: sticky;
-    right: 0;
-    background: inherit;
-    z-index: 15;
-    min-width: 120px;
-    width: 120px;
-    text-align: center;
-}
 
 
 /* ─── BADGE STYLES ────────────────────────────────────────────── */
@@ -113,49 +87,9 @@
     white-space: nowrap;
 }
 
-/* ─── FLIGHT NUMBER ───────────────────────────────────────────── */
-.flight-number {
-    color: #024D8A;
-    font-weight: 600;
-    font-size: 13px;
-}
 
-/* ─── BUTTON STYLES ───────────────────────────────────────────── */
-.btn-outline-primary {
-    border-color: #e2e8f0;
-    color: #475569;
-    padding: 4px 10px;
-    border-radius: 6px;
-    transition: all 0.2s;
-    background: white;
-}
-
-.btn-outline-primary:hover {
-    background-color: #024D8A;
-    border-color: #024D8A;
-    color: white;
-}
-
-.btn-outline-danger {
-    border-color: #e2e8f0;
-    color: #475569;
-    padding: 4px 10px;
-    border-radius: 6px;
-    transition: all 0.2s;
-    background: white;
-}
-
-.btn-outline-danger:hover {
-    background-color: #dc3545;
-    border-color: #dc3545;
-    color: white;
-}
 
 /* ─── SORT INDICATOR ──────────────────────────────────────────── */
-.sort-icon {
-    margin-left: 4px;
-    font-size: 11px;
-}
 
 /* ─── SCROLLBAR STYLING ───────────────────────────────────────── */
 /* .table-container::-webkit-scrollbar {
