@@ -122,7 +122,6 @@ export class ErpSidebarComponent implements OnInit {
     }
   }
 
-  // ✅ FIX: Navigation + Expand works correctly
   goto(menu: Menu) {
     const originalMenu = this.findOriginalMenu(menu);
     const target = originalMenu || menu; // Use original if found
@@ -144,7 +143,6 @@ export class ErpSidebarComponent implements OnInit {
         queryParams: {
           formTitle: target.menuName,
           formRoute: target.route,
-          menuId: target.menuId          
         }
       }
     );

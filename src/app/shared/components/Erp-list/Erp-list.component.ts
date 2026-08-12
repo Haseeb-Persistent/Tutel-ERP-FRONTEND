@@ -51,12 +51,12 @@ export class ErpList implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.clearSearch()
     this.paramSubscription = this.activatedRoute.paramMap.subscribe((params) => {
       this.formName = params.get('formName') || 'Dashboard';
       this.formId = this.formName;
       this.loadPageData();
     });
+    this.clearSearch()
 
     this.querySubscription = this.activatedRoute.queryParams.subscribe((params) => {
       this.formTitle = params['formTitle'] || `${this.formName} Setup`;
@@ -179,8 +179,7 @@ export class ErpList implements OnInit, OnDestroy {
   }
 
   onRowClick(data: any) {
-    // Try to find the ID field
-    const recordId = data?.recordId || data?.id || data?.RowID || data?.rowid || data?.['Record ID'];
+    const recordId = data?.recordId || data?.id || data?.RowID || data?.rowid || data?.['recordId'];
     if (!recordId) {
       this.dialogService.alertBox('Record ID not found.');
       return;

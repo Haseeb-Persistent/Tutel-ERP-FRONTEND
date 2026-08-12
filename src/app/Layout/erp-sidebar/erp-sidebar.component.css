@@ -405,25 +405,7 @@
     }
 }
 
-/* ================================================================ */
-/*                     SCROLLBAR                                    */
-/* ================================================================ */
-.sidebar::-webkit-scrollbar {
-    width: 4px;
-}
 
-.sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background: #d7d7d7;
-    border-radius: 10px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-    background: #bdbdbd;
-}
 
 /* ================================================================ */
 /*                     LOADING / ERROR                              */

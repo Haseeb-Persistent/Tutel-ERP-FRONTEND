@@ -89,36 +89,6 @@
 
 
 
-/* ─── SORT INDICATOR ──────────────────────────────────────────── */
-
-/* ─── SCROLLBAR STYLING ───────────────────────────────────────── */
-/* .table-container::-webkit-scrollbar {
-    background: #1460ad;
-
-    width: 15px;
-    height: 15px;
-}
-
-.table-container::-webkit-scrollbar-track {
-    background: #1460ad;
-    border-radius: 4px;
-}
-
-.table-container::-webkit-scrollbar-thumb {
-      background: #1460ad;
-
-    border-radius: 4px;
-}
-
-.table-container::-webkit-scrollbar-thumb:hover {
-       background: #1460ad;
-
-} */
-
-/* For Firefox */
-.table-container {
-    scrollbar-color: hsl(213, 86%, 51%) #f1f5f9;
-}
 
 /* ─── RESPONSIVE ───────────────────────────────────────────────── */
 @media (max-width: 768px) {
