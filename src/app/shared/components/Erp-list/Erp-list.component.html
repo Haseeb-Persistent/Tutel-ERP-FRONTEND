@@ -24,15 +24,10 @@
                 <div class="col-xl-7 col-lg-7 col-md-5">
                     <div class="input-group searchBar-additional-child">
                         <input type="text" class="form-control" placeholder="Search...."
-                            [(ngModel)]="searchKeyword" (keydown.enter)="onSearch()">
-                        <button class="btn btn-primary" (click)="onSearch()">
+                            [(ngModel)]="searchKeyword" (input)="onSearch()">
+                        <button class="btn btn-primary" style="border-radius: 0px !important;" (click)="onSearch()">
                             <i class="fa-solid fa-search me-1"></i> Search
                         </button>
-                        @if (searchKeyword) {
-                        <button class="btn btn-outline-secondary" (click)="clearSearch()">
-                            <i class="fa-solid fa-times"></i>
-                        </button>
-                        }
                     </div>
                 </div>
                 <div class="col-xl-5 col-lg-5 col-md-7 text-end">
@@ -42,22 +37,24 @@
 
             <br />
 
-            <!-- Loading State -->
-            @if (isLoading) {
-            <div class="text-center py-5">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2 text-muted">Loading data...</p>
-            </div>
-            }
+@if (isLoading) {
+<div class="skeleton-sidebar">
+  <div class="skeleton__section">
+    <div class="skeleton__block"></div>
+    <div class="skeleton__block"></div>
+    <div class="skeleton__block"></div>
+    <div class="skeleton__block"></div>
+    <div class="skeleton__block"></div>
+    <div class="skeleton__block"></div>
+  </div>
 
-            <!-- Table with Both Horizontal and Vertical Scrolling -->
+</div>
+}
             @if (!isLoading) {
             <div class="row pt-3 min-table">
                 <div class="table-container" #tableWrapper>
                     <table class="table table-fixed-header mb-0">
-                        <!-- Fixed Header -->
+                        <!-- Fixed Header -->   
                         <thead>
                             <tr>
                                 <!-- Dynamic Columns -->
@@ -69,8 +66,9 @@
                                     }
                                 </th>
                                 }
-                                <!-- Action Column -->
-                                <th class="text-center">Actions</th>
+                                 @if (!isLoading) {
+                                <th class="text-center" >Actions</th>
+                                 }
                             </tr>
                         </thead>
                         <tbody>

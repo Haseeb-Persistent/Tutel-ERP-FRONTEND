@@ -1,14 +1,14 @@
 import { Router, Routes } from '@angular/router';
-import { ErpLoginComponent } from './PAGES/Authentication/erp-login/erp-login.component';
+import { ErpLoginComponent } from './COMPONENTS/Authentication/erp-login/erp-login.component';
 import { MainLayoutComponent } from './Layout/main-layout/main-layout.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { inject } from '@angular/core';
 import { AuthService } from './core/services/auth.service';
 import { filter, map, take } from 'rxjs';
-import { UserRoute } from './PAGES/USER_SETUP/User.route';
-import { LocationRoute } from './PAGES/Location-Setup/location.route';
+import { UserRoute } from './COMPONENTS/USER_SETUP/User.route';
+import { LocationRoute } from './COMPONENTS/LOCATION_SETUP/location.route';
 import { ErpList } from './shared/components/Erp-list/Erp-list.component';
-import { CompanyRoute } from './PAGES/COMPANY_SETUP/Company.route';
+import { CompanyRoute } from './COMPONENTS/COMPANY_SETUP/Company.route';
 
 export const routes: Routes = [
   // Default redirect
@@ -45,7 +45,7 @@ export const routes: Routes = [
       // Dashboard
       {
         path: 'dashboard',
-        loadComponent: () => import('./PAGES/erp-dashboard/erp-dashboard.component')
+        loadComponent: () => import('./COMPONENTS/erp-dashboard/erp-dashboard.component')
           .then(m => m.ErpDashboardComponent)
       },
       

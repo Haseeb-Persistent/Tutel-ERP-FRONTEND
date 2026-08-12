@@ -75,7 +75,6 @@ export class ErpProvinceComponent implements OnInit {
     });
   }
 
-  // ✅ Fetch all countries for the dropdown
   loadCountries() {
     this.gridService.getGridData('Country').subscribe({
       next: (res: any) => {

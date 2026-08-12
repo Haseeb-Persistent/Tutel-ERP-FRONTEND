@@ -6,51 +6,49 @@
 
     <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search..." />
+        <input type="text" placeholder="Search..." [(ngModel)]="searchKeyword" />
+        @if (searchKeyword) {
+        <i class="fas fa-times clear-btn" (click)="searchKeyword = ''"></i>
+        }
     </div>
 
     <nav class="nav">
         <div class="nav-label">Main Menu</div>
 
-@if (loading) {
-<div class="skeleton-sidebar">
-  <div class="skeleton__section">
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-  </div>
-  <div class="skeleton__section">
-    <div class="skeleton__group"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-  </div>
-</div>
-}
-        <!-- ERROR MESSAGE -->
-        @if (!loading && errorMessage) {
-        <div class="alert-danger">
-            {{ errorMessage }}
-            <button (click)="loadMenus()" class="retry-btn">Retry</button>
+        @if (loading) {
+        <div class="skeleton-sidebar">
+          <div class="skeleton__section">
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+          </div>
+          <div class="skeleton__section">
+            <div class="skeleton__group"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+            <div class="skeleton__block"></div>
+          </div>
         </div>
         }
-
-        <!-- ACTUAL MENUS -->
         @if (!loading && !errorMessage) {
-            @for (menu of menus; track menu.menuId) {
+            @for (menu of filteredMenus; track menu.menuId) {
             <div class="nav-item">
+                <!-- FIXED: Main click opens/closes folders AND navigates -->
                 <div class="parent-link" (click)="goto(menu)" [class.active]="activeMenu?.menuId === menu.menuId">
                     @if (menu.icon) {
                     <i [class]="menu.icon"></i>
                     }
-                    <span>{{ menu.menuName }}</span>
+                    <!-- Highlight Pipe (ensure you registered it!) -->
+                    <span [innerHTML]="menu.menuName"></span>
+                    
                     @if (menu.children && menu.children.length > 0) {
+                    <!-- FIXED: Arrow click explicitly only calls toggle, stops parent click -->
                     <i class="fas fa-chevron-down arrow" (click)="$event.stopPropagation(); toggle(menu)"
                         [class.rotated]="menu.expanded">
                     </i>
@@ -65,7 +63,7 @@
                             @if (child.icon) {
                             <i [class]="child.icon"></i>
                             }
-                            <span>{{ child.menuName }}</span>
+                            <span [innerHTML]="child.menuName"></span>
                         </div>
 
                         @if (child.children && child.children.length > 0 && child.expanded) {
@@ -77,7 +75,7 @@
                                     @if (subChild.icon) {
                                     <i [class]="subChild.icon"></i>
                                     }
-                                    <span>{{ subChild.menuName }}</span>
+                                    <span [innerHTML]="subChild.menuName"></span>
                                 </div>
                             </div>
                             }
@@ -87,6 +85,13 @@
                     }
                 </div>
                 }
+            </div>
+            }
+            
+            @if (searchKeyword && filteredMenus.length === 0) {
+            <div class="no-results-message">
+                <i class="fas fa-search-minus"></i>
+                <p>No menu items found for "<strong>{{ searchKeyword }}</strong>"</p>
             </div>
             }
         }

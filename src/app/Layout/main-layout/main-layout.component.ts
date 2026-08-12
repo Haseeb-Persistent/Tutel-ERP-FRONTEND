@@ -3,7 +3,7 @@ import { AlertModalComponent } from "../../shared/components/alert-modal/alert-m
 import { ErpHeaderComponent } from "../erp-header/erp-header.component";
 import { ErpSidebarComponent } from "../erp-sidebar/erp-sidebar.component";
 import { RouterModule } from "@angular/router";
-import { ErpDashboardComponent } from "../../PAGES/erp-dashboard/erp-dashboard.component";
+import { ErpDashboardComponent } from "../../COMPONENTS/erp-dashboard/erp-dashboard.component";
 
 @Component({
   selector: 'app-main-layout',

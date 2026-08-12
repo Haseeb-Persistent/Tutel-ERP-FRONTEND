@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from '../../../core/services/DialogService';
 import { GridService } from '../../../core/services/grid.service';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { NgxUiLoaderModule } from "ngx-ui-loader";
 
 @Component({
   selector: 'app-erp-list',
@@ -50,6 +51,7 @@ export class ErpList implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.clearSearch()
     this.paramSubscription = this.activatedRoute.paramMap.subscribe((params) => {
       this.formName = params.get('formName') || 'Dashboard';
       this.formId = this.formName;
@@ -216,20 +218,20 @@ export class ErpList implements OnInit, OnDestroy {
   }
 
   onSearch() { 
-    const keyword = this.searchKeyword?.trim().toLowerCase() || '';
-    if (!keyword) {
-      this.table2 = [...this.allData];
-    } else {
-      const filteredResults = this.allData.filter(row =>
-        Object.values(row).some(value =>
-          value && value.toString().toLowerCase().includes(keyword)
-        )
-      );
-      this.table2 = filteredResults.length > 0 ? filteredResults : [...this.allData];
-    }
-    this.totalRecords = this.table2.length;
-    this.pageNumber = 1;
+  const keyword = this.searchKeyword?.trim().toLowerCase() || '';
+  if (!keyword) {
+    this.table2 = [...this.allData];
+  } else {
+    const filteredResults = this.allData.filter(row =>
+      Object.values(row).some(value =>
+        value && value.toString().toLowerCase().includes(keyword)
+      )
+    );
+    this.table2 = filteredResults; 
   }
+  this.totalRecords = this.table2.length;
+  this.pageNumber = 1;
+}
 
   clearSearch() {
     this.searchKeyword = '';
