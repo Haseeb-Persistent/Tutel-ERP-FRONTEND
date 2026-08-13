@@ -1,6 +1,6 @@
 /* ─── TABLE CONTAINER WITH BOTH SCROLLS ──────────────────────── */
 .table-container {
-  max-height: 100vh;
+  max-height: 400px;
   max-width: 100%;
   overflow: auto;
   position: relative;
