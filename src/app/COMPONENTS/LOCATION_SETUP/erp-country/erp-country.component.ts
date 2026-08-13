@@ -4,34 +4,29 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CrudButton } from '../../../shared/components/crud-button/crud-button';
 import { LimitInputDirective } from '../../../shared/directive/limit-input';
-import { finalize } from 'rxjs';
+import { finalize, firstValueFrom } from 'rxjs';
 import { DialogService } from '../../../core/services/DialogService';
 import { GridService } from '../../../core/services/grid.service';
+import { isErrorMessage } from '../../../shared/helper/errorMess';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { LovModalComponent } from '../../../shared/components/erp-modal/erp-modal.component';
 
 @Component({
   selector: 'app-erp-country',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    CrudButton,
-    RouterModule,
-    LimitInputDirective,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, CrudButton, RouterModule, LimitInputDirective,],
   templateUrl: './erp-country.component.html',
 })
 export class ErpCountryComponent implements OnInit {
   countryForm!: FormGroup;
-  submitted: boolean = false;
-  formId: string = '';
-  headerTitle: string = 'Country Setup';
-  rowId: string = '';
-  isEditMode: boolean = false;
-  isLoading: boolean = false;
-
-  // ✅ Track backend validation errors
+  submitted = false;
+  formId = '';
+  headerTitle = '';
+  rowId = '';
+  isEditMode = false;
+  isLoading = false;
+  isSaving = false;
   fieldErrors: { [key: string]: string[] } = {};
-
   statusOptions = [
     { value: true, label: 'Active' },
     { value: false, label: 'Inactive' }
@@ -51,14 +46,8 @@ export class ErpCountryComponent implements OnInit {
       this.formId = params['f'] || 'Country';
       this.headerTitle = params['formTitle'] || 'Country Setup';
       this.rowId = params['id'] || '';
-
-      if (this.rowId) {
-        this.isEditMode = true;
-        this.loadForEdit(this.rowId);
-      } else {
-        this.isEditMode = false;
-        this.onReset();
-      }
+      this.isEditMode = !!this.rowId;
+      this.isEditMode ? this.loadForEdit(this.rowId) : this.onReset();
     });
   }
 
@@ -71,181 +60,136 @@ export class ErpCountryComponent implements OnInit {
     });
   }
 
- loadForEdit(rowId: string): void {
+loadForEdit(rowId: string): void {
   this.isLoading = true;
-  this.gridService.getRecordById(this.formId, rowId)
+  this.gridService.GettAllOptions(this.formId, rowId)
     .pipe(finalize(() => this.isLoading = false))
     .subscribe({
       next: (data) => {
-        const mappedData = {
-          countryId: data['CountryId'] || data['countryId'] || 0,
-          countryName: data['CountryName'] || data['countryName'] || '',
-          countryCode: data['CountryCode'] || data['countryCode'] || '',
-          isActive: data['IsActive'] ?? data['isActive'] ?? true
-        };
-        
-        this.countryForm.patchValue(mappedData);
+        if (data) {
+          const patchData = {
+            countryId: data['CountryId'] || data['countryId'] || data['countryid'] || 0,
+            countryName: data['CountryName'] || data['countryName'] || data['countryname'] || '',
+            countryCode: data['CountryCode'] || data['countryCode'] || data['countrycode'] || '',
+            isActive: data['IsActive'] ?? data['isActive'] ?? data['isactive'] ?? true
+          };
+          
+          this.countryForm.patchValue(patchData);
+          
+          if (!this.countryForm.get('countryName')?.value) {
+            this.countryForm.setValue(patchData);
+          }
+        }
       },
-      error: (err: any) => {
-        console.error('Error loading record for edit:', err);
-        this.dialog.alertBox('Failed to load record details.');
-      }
+      error: () => this.dialog.alertBox('Failed to load record details.')
     });
 }
 
-  // ✅ CLEAR FIELD ERRORS when user types
   onFieldChange(fieldName: string): void {
-    const control = this.countryForm.get(fieldName);
-    const currentValue = control?.value;
+    if (this.countryForm.get(fieldName)?.value?.toString().trim()) {
+      delete this.fieldErrors[fieldName];
+    }
+  }
 
-    if (currentValue && currentValue.toString().trim() !== '') {
-      if (this.fieldErrors[fieldName]) {
-        delete this.fieldErrors[fieldName];
+  async onSave(): Promise<void> {
+    if (this.isSaving || this.countryForm.invalid) {
+      if (this.countryForm.invalid) this.markAllFieldsTouched();
+      return;
+    }
+    this.submitted = true;
+    this.fieldErrors = {};
+    this.isSaving = true;
+
+    try {
+      const res = await firstValueFrom(this.gridService.insertRecord(this.formId, {
+        formId: this.formId,
+        data: {
+          countryName: this.countryForm.value.countryName,
+          countryCode: this.countryForm.value.countryCode,
+          isActive: this.countryForm.value.isActive
+        }
+      }));
+      this.isSaving = false;
+      if (res?.message) await this.dialog.alertBox(res.message);
+      if (!isErrorMessage(res?.message)) window.history.back();
+    } catch (error: any) {
+      this.isSaving = false;
+      if (error.status === 400 && error.error?.errors) {
+        this.fieldErrors = error.error.errors;
+        Object.keys(this.fieldErrors).forEach(key => this.countryForm.get(key)?.markAsTouched());
+      } else {
+        const msg = error?.error?.message || error?.message;
+        if (msg) await this.dialog.alertBox(msg);
       }
     }
   }
 
-  // ✅ FRONTEND + BACKEND VALIDATION
-  onSave(): void {
-    this.submitted = true;
-    this.fieldErrors = {}; // Clear previous backend errors
-
-    if (this.countryForm.invalid) {
-      this.markAllFieldsTouched();
+  async onUpdate(): Promise<void> {
+    if (this.isSaving || this.countryForm.invalid) {
+      if (this.countryForm.invalid) this.markAllFieldsTouched();
       return;
     }
-
-    const payload = {
-      formId: this.formId,
-      data: {
-        countryName: this.countryForm.value.countryName,
-        countryCode: this.countryForm.value.countryCode,
-        isActive: this.countryForm.value.isActive
-      }
-    };
-
-    this.gridService.insertRecord(this.formId, payload).subscribe({
-      next: (response) => {
-        const apiMessage = response?.message || 'Record saved successfully!';
-        this.dialog.alertBox(apiMessage).then(() => {
-          this.onReset();
-        });
-      },
-      error: (err) => {
-        // ✅ Handle Backend 400 Validation Errors
-        if (err.status === 400 && err.error?.errors) {
-          this.fieldErrors = err.error.errors;
-          
-          // Mark fields with backend errors as touched
-          Object.keys(this.fieldErrors).forEach(key => {
-            const control = this.countryForm.get(key);
-            if (control) {
-              control.markAsTouched();
-            }
-          });
-        } else {
-          this.dialog.alertBox(err?.error?.message || 'An error occurred while saving.');
-        }
-      }
-    });
-  }
-
-  // ✅ FRONTEND + BACKEND VALIDATION
-  onUpdate(): void {
     this.submitted = true;
-    this.fieldErrors = {}; // Clear previous backend errors
+    this.fieldErrors = {};
+    this.isSaving = true;
 
-    if (this.countryForm.invalid) {
-      this.markAllFieldsTouched();
-      return;
-    }
-
-    const payload = {
-      formId: this.formId,
-      data: {
-        countryName: this.countryForm.value.countryName,
-        countryCode: this.countryForm.value.countryCode,
-        isActive: this.countryForm.value.isActive
-      },
-      recordId: this.rowId
-    };
-
-    this.gridService.updateRecord(this.formId, payload).subscribe({
-      next: (response) => {
-        const apiMessage = response?.message || 'Record updated successfully!';
-        this.dialog.alertBox(apiMessage).then(() => {
-          this.isEditMode = false;
-        });
-      },
-      error: (err) => {
-        // ✅ Handle Backend 400 Validation Errors
-        if (err.status === 400 && err.error?.errors) {
-          this.fieldErrors = err.error.errors;
-          
-          Object.keys(this.fieldErrors).forEach(key => {
-            const control = this.countryForm.get(key);
-            if (control) {
-              control.markAsTouched();
-            }
-          });
-        } else {
-          this.dialog.alertBox(err?.error?.message || 'An error occurred while updating.');
-        }
+    try {
+      const res = await firstValueFrom(this.gridService.updateRecord(this.formId, {
+        formId: this.formId,
+        data: {
+          countryName: this.countryForm.value.countryName,
+          countryCode: this.countryForm.value.countryCode,
+          isActive: this.countryForm.value.isActive
+        },
+        recordId: this.rowId
+      }));
+      if (res?.message) await this.dialog.alertBox(res.message);
+      if (!isErrorMessage(res?.message)) {
+        this.isEditMode = false;
+        window.history.back();
       }
-    });
+    } catch (error: any) {
+      if (error.status === 400 && error.error?.errors) {
+        this.fieldErrors = error.error.errors;
+        Object.keys(this.fieldErrors).forEach(key => this.countryForm.get(key)?.markAsTouched());
+      } else {
+        const msg = error?.error?.message || error?.message;
+        if (msg) await this.dialog.alertBox(msg);
+      }
+    } finally {
+      this.isSaving = false;
+    }
   }
 
   onReset(): void {
     this.submitted = false;
     this.fieldErrors = {};
-    this.countryForm.reset();
-    this.countryForm.patchValue({
-      countryId: 0,
-      isActive: true
-    });
+    this.countryForm.reset({ countryId: 0, isActive: true });
     this.isEditMode = false;
     this.markAllFieldsPristine();
   }
 
   onBack(): void {
-  // Navigate back to the Grid List
-  this._router.navigate([`/app/ErpList/${this.formId}`], {
-    queryParams: { formTitle: this.headerTitle }
-  });
-}
-  // ─── HELPERS ─────────────────────────────────────────────────────────
-
-  // Check if field has frontend OR backend validation error
-  isFieldInvalid(fieldName: string): boolean {
-    const control = this.countryForm.get(fieldName);
-    const hasFrontendError = !!(control && control.invalid && (control.dirty || control.touched || this.submitted));
-    const hasBackendError = this.hasFieldError(fieldName);
-    return hasFrontendError || hasBackendError;
+    this._router.navigate([`/app/ErpList/${this.formId}`], { queryParams: { formTitle: this.headerTitle } });
   }
 
-  // Get error message (frontend priority, fallback to backend)
+  isFieldInvalid(fieldName: string): boolean {
+    const c = this.countryForm.get(fieldName);
+    return !!(c?.invalid && (c.dirty || c.touched || this.submitted)) || this.hasFieldError(fieldName);
+  }
+
   getFieldError(fieldName: string): string {
-    const control = this.countryForm.get(fieldName);
-
-    // 1. Check backend errors first
-    if (this.hasFieldError(fieldName)) {
-      return this.getFieldErrors(fieldName)[0];
-    }
-
-    // 2. Check frontend errors
-    if (!control || !control.errors) return '';
-    const errors = control.errors;
-    if (errors['required']) return 'This field is required';
-    if (errors['minlength']) return `Minimum length is ${errors['minlength'].requiredLength} characters`;
-    if (errors['maxlength']) return `Maximum length is ${errors['maxlength'].requiredLength} characters`;
-    if (errors['pattern']) return 'Invalid format';
-
+    if (this.hasFieldError(fieldName)) return this.fieldErrors[fieldName][0];
+    const e = this.countryForm.get(fieldName)?.errors;
+    if (!e) return '';
+    if (e['required']) return 'This field is required';
+    if (e['minlength']) return `Minimum ${e['minlength'].requiredLength} characters`;
+    if (e['maxlength']) return `Maximum ${e['maxlength'].requiredLength} characters`;
     return 'Invalid value';
   }
 
-  // Backend error helpers
   hasFieldError(fieldName: string): boolean {
-    return this.fieldErrors[fieldName] && this.fieldErrors[fieldName].length > 0;
+    return !!this.fieldErrors[fieldName]?.length;
   }
 
   getFieldErrors(fieldName: string): string[] {
@@ -253,17 +197,14 @@ export class ErpCountryComponent implements OnInit {
   }
 
   private markAllFieldsTouched(): void {
-    Object.keys(this.countryForm.controls).forEach(key => {
-      const control = this.countryForm.get(key);
-      control?.markAsTouched();
-    });
+    Object.keys(this.countryForm.controls).forEach(key => this.countryForm.get(key)?.markAsTouched());
   }
 
   private markAllFieldsPristine(): void {
     Object.keys(this.countryForm.controls).forEach(key => {
-      const control = this.countryForm.get(key);
-      control?.markAsPristine();
-      control?.markAsUntouched();
+      const c = this.countryForm.get(key);
+      c?.markAsPristine();
+      c?.markAsUntouched();
     });
   }
 

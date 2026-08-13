@@ -1,93 +1,75 @@
 <div class="code-block">
-    <div class="d-flex align-items-center justify-content-between">
-        <div>
-            <h4>{{ headerTitle || 'Country Setup' }}</h4>
-        </div>
-        <div class="d-flex align-items-center">
-               <app-crud-button
-                [showSave]="!isEditMode"
-                [showUpdate]="isEditMode"
-                [showReset]="true"
-                [showBack]="true"
-                (onSave)="onSave()"
-                (onUpdate)="onUpdate()"
-                (onReset)="onReset()"
-                (onBack)="onBack()">
-            </app-crud-button>
-
-        </div>
+  <div class="d-flex align-items-center justify-content-between">
+    <div><h4>{{ headerTitle || 'Country Setup' }}</h4></div>
+    <div class="d-flex align-items-center">
+      <app-crud-button
+        [showSave]="!isEditMode"
+        [showUpdate]="isEditMode"
+        [showReset]="true"
+        [showBack]="true"
+        [isLoading]="isSaving"
+        (onSave)="onSave()"
+        (onUpdate)="onUpdate()"
+        (onReset)="onReset()"
+        (onBack)="onBack()">
+      </app-crud-button>
     </div>
+  </div>
 </div>
 
 <div class="code-block shadow-sm mt-3">
-    <form [formGroup]="countryForm" (ngSubmit)="onSave()">
-        <div class="row g-3">
-            <!-- Country Name -->
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <label class="form-label">
-                    Country Name <span class="text-danger">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    class="form-control" 
-                    formControlName="countryName"
-                    placeholder="Enter Country Name"
-                    alphaOnly
-                    (input)="onFieldChange('countryName')"
-                    [class.is-invalid]="isFieldInvalid('countryName')"
-                    [class.is-valid]="f['countryName'].valid && (f['countryName'].touched || submitted) && !hasFieldError('countryName')">
-                
-                @if (isFieldInvalid('countryName')) {
-                    <div class="invalid-feedback">
-                        {{ getFieldError('countryName') }}
-                    </div>
-                }
-            </div>
+  <form [formGroup]="countryForm" (ngSubmit)="onSave()">
+    <div class="row g-3">
+      
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label class="form-label">Country Name <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="countryName"
+          placeholder="Enter Country Name"
+          alphaOnly
+          (input)="onFieldChange('countryName')"
+          [class.is-invalid]="isFieldInvalid('countryName')"
+          [class.is-valid]="f['countryName'].valid && (f['countryName'].touched || submitted) && !hasFieldError('countryName')">
+        @if (isFieldInvalid('countryName')) {
+          <div class="invalid-feedback">{{ getFieldError('countryName') }}</div>
+        }
+      </div>
 
-            <!-- Country Code -->
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <label class="form-label">
-                    Country Code <span class="text-danger">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    class="form-control" 
-                    formControlName="countryCode"
-                    placeholder="Enter Country Code (e.g., PK, US)"
-                    limitInput="10"
-                    noSpace
-                    (input)="onFieldChange('countryCode')"
-                    [class.is-invalid]="isFieldInvalid('countryCode')"
-                    [class.is-valid]="f['countryCode'].valid && (f['countryCode'].touched || submitted) && !hasFieldError('countryCode')">
-                 
-                @if (isFieldInvalid('countryCode')) {
-                    <div class="invalid-feedback">
-                        {{ getFieldError('countryCode') }}
-                    </div>
-                }
-            </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label class="form-label">Country Code <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="countryCode"
+          placeholder="Enter Country Code (e.g., PK, US)"
+          limitInput="10"
+          noSpace
+          (input)="onFieldChange('countryCode')"
+          [class.is-invalid]="isFieldInvalid('countryCode')"
+          [class.is-valid]="f['countryCode'].valid && (f['countryCode'].touched || submitted) && !hasFieldError('countryCode')">
+        @if (isFieldInvalid('countryCode')) {
+          <div class="invalid-feedback">{{ getFieldError('countryCode') }}</div>
+        }
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label class="form-label">Status <span class="text-danger">*</span></label>
+        <select 
+          class="form-control" 
+          formControlName="isActive"
+          (change)="onFieldChange('isActive')"
+          [class.is-invalid]="isFieldInvalid('isActive')"
+          [class.is-valid]="f['isActive'].valid && (f['isActive'].touched || submitted) && !hasFieldError('isActive')">
+          @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+        @if (isFieldInvalid('isActive')) {
+          <div class="invalid-feedback">{{ getFieldError('isActive') }}</div>
+        }
+      </div>
 
-            <!-- Status -->
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <label class="form-label">
-                    Status <span class="text-danger">*</span>
-                </label>
-                <select 
-                    class="form-control" 
-                    formControlName="isActive"
-                    (change)="onFieldChange('isActive')"
-                    [class.is-invalid]="isFieldInvalid('isActive')"
-                    [class.is-valid]="f['isActive'].valid && (f['isActive'].touched || submitted) && !hasFieldError('isActive')">
-                    @for (option of statusOptions; track option.value) {
-                        <option [value]="option.value">{{ option.label }}</option>
-                    }
-                </select>
-                @if (isFieldInvalid('isActive')) {
-                    <div class="invalid-feedback">
-                        {{ getFieldError('isActive') }}
-                    </div>
-                }
-            </div>
-        </div>
-    </form>
+    </div>
+  </form>
 </div>

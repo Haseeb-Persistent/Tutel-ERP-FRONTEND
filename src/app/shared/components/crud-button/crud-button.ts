@@ -1,6 +1,8 @@
+import { routes } from './../../../app.routes';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogService } from '../../../core/services/DialogService';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-crud-button',
@@ -10,7 +12,7 @@ import { DialogService } from '../../../core/services/DialogService';
   styleUrl: './crud-button.css',
 })
 export class CrudButton {
-  constructor(private dialog: DialogService) {}
+  constructor(private dialog: DialogService,private route : Router) {}
 
   // --- INPUTS to control which buttons appear ---
   @Input() showSave: boolean = true;
@@ -20,6 +22,7 @@ export class CrudButton {
   @Input() showReset: boolean = true;
   @Input() showViewChanges: boolean = false;
   @Input() showBack: boolean = true;
+  @Input() isLoading: boolean = false;
 
   // --- OUTPUTS to send events back to the parent ---
   @Output() onSave = new EventEmitter<void>();

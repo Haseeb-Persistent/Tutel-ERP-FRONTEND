@@ -127,17 +127,6 @@
     border-radius: 0 0 8px 8px;
 }
 
-/* ─── SEARCH BAR ───────────────────────────────────────────────── */
-
-
-/* ─── CODE BLOCK ───────────────────────────────────────────────── */
-
-
-.code-block h4 {
-    color: #1e293b;
-    font-weight: 600;
-    margin-bottom: 0;
-}
 
 /* ─── EMPTY STATE ──────────────────────────────────────────────── */
 .text-muted i.fa-inbox {

@@ -51,26 +51,13 @@
   min-width: 150px;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background-color: #0069d9;
-  border-color: #0062cc;
-}
 
-.btn-primary:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
 
 .form-group {
   margin-bottom: 1.5rem;
 }
 
-.form-label {
-  display: inline-block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: #495057;
-}
+
 
 .form-control {
   display: block;
@@ -86,16 +73,6 @@
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.spinner-border {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  vertical-align: text-bottom;
-  border: 0.2em solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
-  animation: spinner-border 0.75s linear infinite;
-}
 
 .mr-2 {
   margin-right: 0.5rem;

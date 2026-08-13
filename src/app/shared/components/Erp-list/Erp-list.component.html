@@ -4,11 +4,11 @@
         <div class="code-block" style="border-radius: 10px;">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
-                    <h4>{{ formTitle }}</h4>
+                    <h4>{{ formTitle }} Setup</h4>
                 </div>
                 <div>
                     @if (isAddNewVisible) {
-                    <button type="button" class="btn  btn-primary " (click)="addNewSetup()">
+                    <button type="button" class="btn btn-primary" (click)="addNewSetup()">
                         <i class="fa-solid fa-plus me-1"></i>
                         <span>Add New</span>
                     </button>
@@ -37,24 +37,24 @@
 
             <br />
 
-@if (isLoading) {
-<div class="skeleton-sidebar">
-  <div class="skeleton__section">
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-    <div class="skeleton__block"></div>
-  </div>
+            @if (isLoading) {
+            <div class="skeleton-sidebar">
+                <div class="skeleton__section">
+                    <div class="skeleton__block"></div>
+                    <div class="skeleton__block"></div>
+                    <div class="skeleton__block"></div>
+                    <div class="skeleton__block"></div>
+                    <div class="skeleton__block"></div>
+                    <div class="skeleton__block"></div>
+                </div>
+            </div>
+            }
 
-</div>
-}
             @if (!isLoading) {
             <div class="row pt-3 min-table">
                 <div class="table-container" #tableWrapper>
                     <table class="table table-fixed-header mb-0">
-                        <!-- Fixed Header -->   
+                        <!-- Fixed Header -->
                         <thead>
                             <tr>
                                 <!-- Dynamic Columns -->
@@ -66,12 +66,13 @@
                                     }
                                 </th>
                                 }
-                                 @if (!isLoading) {
-                                <th class="text-center" >Actions</th>
-                                 }
+                                @if (!isLoading) {
+                                <th class="text-center">Actions</th>
+                                }
                             </tr>
                         </thead>
                         <tbody>
+                            <!-- ✅ FIXED: Use item and $index properly -->
                             @for (item of getCurrentPageData(); track $index) {
                             <tr>
                                 <!-- Dynamic Data -->
@@ -91,12 +92,10 @@
                                 }
                                 <!-- Actions (Sticky Right) -->
                                 <td class="text-center actions-cell">
-                                    <button class="btn btn-xs btn-primary" title="Edit" (click)="onRowClick(item)">
-                              Select
+                                    <!-- ✅ FIXED: Pass item and $index to onRowClick -->
+                                    <button class="btn btn-xs btn-primary" title="Edit" (click)="onRowClick(item, $index)">
+                                        Select
                                     </button>
-                                    <!-- <button class="btn btn-sm btn-outline-danger" title="Delete" (click)="onDelete(item.recordId || item.id || item.RowID || item.rowid)">
-                                        <i class="fa-regular fa-trash-can"></i>
-                                    </button> -->
                                 </td>
                             </tr>
                             }

@@ -30,11 +30,8 @@ export class ErpList implements OnInit, OnDestroy {
   isAddNewVisible: boolean = true;
   isLoading: boolean = false;
 
-  // Pagination properties
   pageNumber: number = 1;
   pageSize: number = 14;
-
-  // Search
   searchKeyword: string = '';
 
   gridHeaders = signal<string[]>([]);
@@ -42,6 +39,10 @@ export class ErpList implements OnInit, OnDestroy {
 
   private paramSubscription: any;
   private querySubscription: any;
+
+  // ✅ Store recordId mapping for row clicks
+  private recordIdMap: Map<number, any> = new Map();
+
 
   constructor(
     private gridService: GridService,
@@ -55,8 +56,8 @@ export class ErpList implements OnInit, OnDestroy {
       this.formName = params.get('formName') || 'Dashboard';
       this.formId = this.formName;
       this.loadPageData();
+      this.clearSearch()
     });
-    this.clearSearch()
 
     this.querySubscription = this.activatedRoute.queryParams.subscribe((params) => {
       this.formTitle = params['formTitle'] || `${this.formName} Setup`;
@@ -78,16 +79,13 @@ export class ErpList implements OnInit, OnDestroy {
     this.gridColumns.set([]);
     this.gridHeaders.set([]);
     this.pageNumber = 1;
+    this.recordIdMap.clear();
     
-    // Call your API service
     this.gridService.getGridData(this.formName).subscribe({
       next: (res: any) => {
         this.isLoading = false;
         
-        // Handle the response based on your API structure
         let data = res;
-        
-        // If your API returns data in a specific property
         if (res && res.data) {
           data = res.data;
         } else if (res && res.Table) {
@@ -120,11 +118,12 @@ export class ErpList implements OnInit, OnDestroy {
         if (allRows.length > 0) {
           const allKeys = Object.keys(allRows[0]);
           
-          // Filter out system columns if needed
+          // ✅ Filter out system columns AND RecordId
           const filteredKeys = allKeys.filter(key => {
             const lowerKey = key.toLowerCase();
-            // Hide system columns
-            if (lowerKey === 'id' || 
+            // ✅ Hide RecordId and system columns
+            if (lowerKey === 'recordid' || 
+                lowerKey === 'id' || 
                 lowerKey === 'rowid' || 
                 lowerKey === 'createddate' || 
                 lowerKey === 'created_on' || 
@@ -142,12 +141,18 @@ export class ErpList implements OnInit, OnDestroy {
           
           this.gridColumns.set(filteredKeys);
           this.gridHeaders.set([...filteredKeys]);
+          
+          // ✅ Store recordId for each row by index
+          allRows.forEach((row, index) => {
+            const recordId = row?.recordId || row?.RecordId || row?.id || row?.RowID || row?.rowid;
+            if (recordId) {
+              this.recordIdMap.set(index, recordId);
+            }
+          });
         }
 
         this.table2 = allRows;
         this.totalRecords = this.table2.length;
-        
-        // Reset to first page
         this.pageNumber = 1;
       },
       error: (err) => {
@@ -178,20 +183,24 @@ export class ErpList implements OnInit, OnDestroy {
     });
   }
 
-  onRowClick(data: any) {
-    const recordId = data?.recordId || data?.id || data?.RowID || data?.rowid || data?.['recordId'];
-    if (!recordId) {
-      this.dialogService.alertBox('Record ID not found.');
-      return;
-    }
-    this.router.navigate([`/app/${this.Route}`], {
-      queryParams: {
-        f: this.formName,
-        id: recordId,
-        formTitle: this.formTitle
-      }
-    });
+  onRowClick(data: any, index: number) {
+  let recordId = this.recordIdMap.get(index);
+  if (!recordId) {
+    recordId = data?.recordId || data?.RecordId || data?.id || data?.RowID || data?.rowid;
   }
+  if (!recordId) {
+    this.dialogService.alertBox('Record ID not found.');
+    return;
+  }
+  
+  this.router.navigate([`/app/${this.Route}`], {
+    queryParams: {
+      f: this.formName,
+      id: recordId,
+      formTitle: this.formTitle
+    }
+  });
+}
 
   onDelete(recordId: string) {
     if (!recordId) {
@@ -206,7 +215,7 @@ export class ErpList implements OnInit, OnDestroy {
       this.gridService.deleteRecord(this.formName, id).subscribe({
         next: () => {
           this.dialogService.alertBox('Record deleted successfully.');
-          this.loadPageData(); // Reload data
+          this.loadPageData();
         },
         error: (err) => {
           const message = err?.error?.message || 'Error deleting record.';
@@ -217,20 +226,29 @@ export class ErpList implements OnInit, OnDestroy {
   }
 
   onSearch() { 
-  const keyword = this.searchKeyword?.trim().toLowerCase() || '';
-  if (!keyword) {
-    this.table2 = [...this.allData];
-  } else {
-    const filteredResults = this.allData.filter(row =>
-      Object.values(row).some(value =>
-        value && value.toString().toLowerCase().includes(keyword)
-      )
-    );
-    this.table2 = filteredResults; 
+    const keyword = this.searchKeyword?.trim().toLowerCase() || '';
+    if (!keyword) {
+      this.table2 = [...this.allData];
+    } else {
+      const filteredResults = this.allData.filter(row =>
+        Object.values(row).some(value =>
+          value && value.toString().toLowerCase().includes(keyword)
+        )
+      );
+      this.table2 = filteredResults; 
+    }
+    this.totalRecords = this.table2.length;
+    this.pageNumber = 1;
+    
+    // ✅ Rebuild recordId map after search
+    this.recordIdMap.clear();
+    this.table2.forEach((row, index) => {
+      const recordId = row?.recordId || row?.RecordId || row?.id || row?.RowID || row?.rowid;
+      if (recordId) {
+        this.recordIdMap.set(index, recordId);
+      }
+    });
   }
-  this.totalRecords = this.table2.length;
-  this.pageNumber = 1;
-}
 
   clearSearch() {
     this.searchKeyword = '';

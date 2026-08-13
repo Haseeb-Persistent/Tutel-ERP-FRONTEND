@@ -1,100 +1,76 @@
 <div class="code-block">
-    <div class="d-flex align-items-center justify-content-between">
-        <div>
-            <h4>{{ headerTitle || 'Province Setup' }}</h4>
-        </div>
-        <div class="d-flex align-items-center">
-            <app-crud-button
-                [showSave]="!isEditMode"
-                [showUpdate]="isEditMode"
-                [showReset]="true"
-                [showBack]="true"
-                (onSave)="onSave()"
-                (onUpdate)="onUpdate()"
-                (onReset)="onReset()"
-                (onBack)="onBack()">
-            </app-crud-button>
-        </div>
+  <div class="d-flex align-items-center justify-content-between">
+    <div><h4>{{ headerTitle }}</h4></div>
+    <div class="d-flex align-items-center">
+      <app-crud-button
+        [showSave]="!isEditMode"
+        [showUpdate]="isEditMode"
+        [showReset]="true"
+        [showBack]="true"
+        [isLoading]="isSaving"
+        (onSave)="onSave()"
+        (onUpdate)="onUpdate()"
+        (onReset)="onReset()"
+        (onBack)="onBack()">
+      </app-crud-button>
     </div>
+  </div>
 </div>
 
 <div class="code-block shadow-sm mt-3">
-    <form [formGroup]="provinceForm" (ngSubmit)="onSave()">
-        <div class="row g-3">
-            
-          <!-- Country Dropdown -->
-<div class="col-lg-6 col-md-6 col-sm-12">
-    <label class="form-label">
-        Country <span class="text-danger">*</span>
-    </label>
-    <select 
-        class="form-control" 
-        formControlName="countryId"
-        (change)="onFieldChange('countryId')"
-        [class.is-invalid]="isFieldInvalid('countryId')"
-        [class.is-valid]="f['countryId'].valid && (f['countryId'].touched || submitted) && !hasFieldError('countryId')">
-        
-        <!-- Placeholder Option -->
-        <option value="" disabled selected>-- Select Country --</option>
-        
-        <!-- Loop through Country List -->
-        @for (country of countryList; track country.countryId) {
-            <option [value]="country.countryId">
-                {{ country.countryName }}
-            </option>
+  <form [formGroup]="provinceForm" (ngSubmit)="onSave()">
+    <div class="row g-3">
+      
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label class="form-label">Country <span class="text-danger">*</span></label>
+        <select 
+          class="form-select form-control" 
+          formControlName="countryId"
+          (change)="onFieldChange('countryId')"
+          [class.is-invalid]="isFieldInvalid('countryId')"
+          [class.is-valid]="f['countryId'].valid && (f['countryId'].touched || submitted) && !hasFieldError('countryId')">
+          @for (country of countryList; track country.countryId) {
+            <option [value]="country.countryId">{{ country.countryName }}</option>
+          }
+        </select>
+<button class="btn btn-primary" (click)="openCountryModal()">Select Country</button>
+        @if (isFieldInvalid('countryId')) {
+          <div class="invalid-feedback">{{ getFieldError('countryId') }}</div>
         }
-    </select>
+      </div>
 
-    @if (isFieldInvalid('countryId')) {
-        <div class="invalid-feedback">
-            {{ getFieldError('countryId') }}
-        </div>
-    }
-</div>
-            <!-- Province Name -->
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <label class="form-label">
-                    Province Name <span class="text-danger">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    class="form-control" 
-                    formControlName="provinceName"
-                    placeholder="Enter Province Name"
-                    alphaOnly
-                    (input)="onFieldChange('provinceName')"
-                    [class.is-invalid]="isFieldInvalid('provinceName')"
-                    [class.is-valid]="f['provinceName'].valid && (f['provinceName'].touched || submitted) && !hasFieldError('provinceName')">
-                
-                @if (isFieldInvalid('provinceName')) {
-                    <div class="invalid-feedback">
-                        {{ getFieldError('provinceName') }}
-                    </div>
-                }
-            </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label class="form-label">Province Name <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="provinceName"
+          placeholder="Enter Province Name"
+          alphaOnly
+          (input)="onFieldChange('provinceName')"
+          [class.is-invalid]="isFieldInvalid('provinceName')"
+          [class.is-valid]="f['provinceName'].valid && (f['provinceName'].touched || submitted) && !hasFieldError('provinceName')">
+        @if (isFieldInvalid('provinceName')) {
+          <div class="invalid-feedback">{{ getFieldError('provinceName') }}</div>
+        }
+      </div>
 
-            <!-- Status -->
-            <div class="col-lg-6 col-md-6 col-sm-12">
-                <label class="form-label">
-                    Status <span class="text-danger">*</span>
-                </label>
-                <select 
-                    class="form-control" 
-                    formControlName="isActive"
-                    (change)="onFieldChange('isActive')"
-                    [class.is-invalid]="isFieldInvalid('isActive')">
-                    @for (option of statusOptions; track option.value) {
-                        <option [value]="option.value">{{ option.label }}</option>
-                    }
-                </select>
-                
-                @if (isFieldInvalid('isActive')) {
-                    <div class="invalid-feedback">
-                        {{ getFieldError('isActive') }}
-                    </div>
-                }
-            </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label class="form-label">Status <span class="text-danger">*</span></label>
+        <select 
+          class="form-control" 
+          formControlName="isActive"
+          (change)="onFieldChange('isActive')"
+          [class.is-invalid]="isFieldInvalid('isActive')">
+          @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+        @if (isFieldInvalid('isActive')) {
+          <div class="invalid-feedback">{{ getFieldError('isActive') }}</div>
+        }
+      </div>
 
-        </div>
-    </form>
+    </div>
+  </form>
 </div>
