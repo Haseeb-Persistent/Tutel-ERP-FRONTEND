@@ -14,15 +14,16 @@ import { PaginationComponent } from '../pagination/pagination.component';
   styleUrls: ['./erp-modal.component.css']
 })
 export class LovModalComponent {
-  @Input() modalName: string = '';
-  @Input() formName: string = '';
+  @Input() modalName: string = 'Select Country';
+  @Input() formName: string = 'Country';
   @Input() selectedValue?: any;
 
   @ViewChild('modalContainer') modalContainer!: ElementRef;
   @ViewChild('modalDataScroll') modalDataScroll!: ElementRef;
 
   gridHeaders: string[] = [];
-  gridRows: any[] = [];
+  gridRows: any[] = [];           // ✅ Full filtered data
+  currentPageData: any[] = [];    // ✅ Data for current page
   totalRecords: number = 0;
   isLoading: boolean = false;
   searchKeyword: string = '';
@@ -65,6 +66,7 @@ export class LovModalComponent {
         if (!data || !Array.isArray(data) || data.length === 0) {
           this.allData = [];
           this.gridRows = [];
+          this.currentPageData = [];
           this.totalRecords = 0;
           this.gridHeaders = [];
           this.cdr.detectChanges();
@@ -72,6 +74,7 @@ export class LovModalComponent {
         }
 
         this.allData = data;
+        this.gridRows = data;
         this.totalRecords = data.length;
         
         if (data.length > 0) {
@@ -106,6 +109,7 @@ export class LovModalComponent {
         this.dialogService.alertBox(msg);
         this.allData = [];
         this.gridRows = [];
+        this.currentPageData = [];
         this.totalRecords = 0;
         this.gridHeaders = [];
         this.cdr.detectChanges();
@@ -116,19 +120,24 @@ export class LovModalComponent {
   onSearch() {
     const keyword = this.searchKeyword?.trim().toLowerCase() || '';
     
+    let filteredData: any[] = [];
+    
     if (!keyword) {
-      this.gridRows = [...this.allData];
+      filteredData = [...this.allData];
     } else {
-      const filtered = this.allData.filter(row =>
+      filteredData = this.allData.filter(row =>
         Object.values(row).some(value =>
           value && value.toString().toLowerCase().includes(keyword)
         )
       );
-      this.gridRows = filtered;
     }
     
-    this.totalRecords = this.gridRows.length;
+    // ✅ Store filtered data
+    this.gridRows = filteredData;
+    this.totalRecords = filteredData.length;
     this.pageNumber = 1;
+    
+    // ✅ Apply pagination to the filtered data
     this.applyPagination();
     this.scrollToTop();
   }
@@ -157,6 +166,9 @@ export class LovModalComponent {
       if (valA > valB) return this.isAsc ? 1 : -1;
       return 0;
     });
+    
+    // ✅ Re-apply pagination after sort
+    this.applyPagination();
   }
 
   onRowDoubleClick(row: any) {
@@ -180,8 +192,8 @@ export class LovModalComponent {
 
   applyPagination() {
     const startIndex = (this.pageNumber - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.totalRecords);
-    this.gridRows = this.gridRows.slice(startIndex, endIndex);
+    const endIndex = Math.min(startIndex + this.pageSize, this.gridRows.length);
+    this.currentPageData = this.gridRows.slice(startIndex, endIndex);
   }
 
   onPageChange(event: { pageNumber: number; pageSize: number }) {
@@ -198,8 +210,6 @@ export class LovModalComponent {
   }
 
   getCurrentPageData(): any[] {
-    const startIndex = (this.pageNumber - 1) * this.pageSize;
-    const endIndex = Math.min(startIndex + this.pageSize, this.totalRecords);
-    return this.gridRows.slice(startIndex, endIndex);
+    return this.currentPageData;
   }
 }

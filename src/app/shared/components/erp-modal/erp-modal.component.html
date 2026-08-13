@@ -19,7 +19,8 @@
             [(ngModel)]="searchKeyword" 
             (input)="onSearch()">
           <div class="input-group-prepend">
-            <button class="btn btn-primary btn-search" (click)="onSearch()">
+            
+            <button class="btn btn-primary btn-search" style="border-radius: 0px !important;" (click)="onSearch()">
               <span class="mr-1">
                 <i class="fa-solid fa-search"></i>
               </span>
@@ -60,33 +61,33 @@
               }
             </tr>
           </thead>
-          <tbody>
-            @for (item of getCurrentPageData(); track $index) {
-            <tr (dblclick)="onRowDoubleClick(item)" (click)="onRowClick(item)" style="cursor: pointer;">
-              @for (column of gridHeaders; track column) {
-              <td>
-                @if (column.toLowerCase().includes('active') || column.toLowerCase().includes('status')) {
-                  @if (item[column] === true || item[column] === 'Active' || item[column] === 1) {
-                    <span class="badge bg-success-subtle text-success rounded-pill px-3">Active</span>
-                  } @else {
-                    <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Inactive</span>
-                  }
-                } @else {
-                  {{ item[column] }}
-                }
-              </td>
-              }
-            </tr>
-            }
-            @empty {
-            <tr>
-              <td [attr.colspan]="gridHeaders.length" class="text-center py-4 text-muted">
-                <i class="fa-solid fa-inbox fs-3 d-block mb-2"></i>
-                No records found.
-              </td>
-            </tr>
-            }
-          </tbody>
+   <tbody>
+  @for (item of getCurrentPageData(); track $index) {
+  <tr (dblclick)="onRowDoubleClick(item)" (click)="onRowClick(item)" style="cursor: pointer;">
+    @for (column of gridHeaders; track column) {
+    <td>
+      @if (column.toLowerCase().includes('active') || column.toLowerCase().includes('status')) {
+        @if (item[column] === true || item[column] === 'Active' || item[column] === 1) {
+          <span class="badge bg-success-subtle text-success rounded-pill px-3">Active</span>
+        } @else {
+          <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Inactive</span>
+        }
+      } @else {
+        {{ item[column] }}
+      }
+    </td>
+    }
+  </tr>
+  }
+  @empty {
+  <tr>
+    <td [attr.colspan]="gridHeaders.length" class="text-center py-4 text-muted">
+      <i class="fa-solid fa-inbox fs-3 d-block mb-2"></i>
+      No records found.
+    </td>
+  </tr>
+  }
+</tbody>
         </table>
       </div>
     </div>
