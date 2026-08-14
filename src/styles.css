@@ -69,6 +69,9 @@ body {
   width: 8px;                /* Vertical scrollbar width */
   height: 8px;               /* Horizontal scrollbar height */
 }
+.modal{
+  overflow: hidden !important;;
+}
 
 /* 2. The Scrollbar Track (Empty space) */
 ::-webkit-scrollbar-track {
