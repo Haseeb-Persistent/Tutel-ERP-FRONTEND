@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -28,6 +28,8 @@ export class ErpProvinceComponent implements OnInit {
   isSaving = false;
   fieldErrors: { [key: string]: string[] } = {};
   countryList: any[] = [];
+  selectedCountryName: string = '';
+  
   statusOptions = [
     { value: true, label: 'Active' },
     { value: false, label: 'Inactive' }
@@ -40,7 +42,7 @@ export class ErpProvinceComponent implements OnInit {
     private dialog: DialogService,
     private gridService: GridService,
     private modalService: NgbModal,
-
+    private cdr: ChangeDetectorRef // ✅ Add ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -66,7 +68,11 @@ export class ErpProvinceComponent implements OnInit {
 
   loadCountries() {
     this.gridService.getGridData('Country').subscribe({
-      next: (res: any) => { if (Array.isArray(res)) this.countryList = res; },
+      next: (res: any) => {
+        if (Array.isArray(res)) {
+          this.countryList = res;
+        }
+      },
       error: () => {}
     });
   }
@@ -76,7 +82,22 @@ export class ErpProvinceComponent implements OnInit {
     this.gridService.GettAllOptions(this.formId, rowId)
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({
-        next: (data) => { if (data) this.provinceForm.patchValue(data); },
+        next: (data) => {
+          if (data) {
+            const countryId = data['CountryId'] || data['countryId'] || data['countryid'] || 0;
+            const countryName = data['CountryName'] || data['countryName'] || data['countryname'] || '';
+            
+            this.provinceForm.patchValue({
+              countryId: countryId,
+              provinceName: data['ProvinceName'] || data['provinceName'] || '',
+              isActive: data['IsActive'] ?? data['isActive'] ?? true
+            });
+            
+            this.selectedCountryName = countryName;
+            // ✅ Trigger change detection
+            this.cdr.detectChanges();
+          }
+        },
         error: () => this.dialog.alertBox('Failed to load record details.')
       });
   }
@@ -85,6 +106,36 @@ export class ErpProvinceComponent implements OnInit {
     if (this.provinceForm.get(fieldName)?.value?.toString().trim()) {
       delete this.fieldErrors[fieldName];
     }
+  }
+
+  openCountryModal() {
+    const modalRef = this.modalService.open(LovModalComponent, {
+      backdrop: 'static',
+      keyboard: true,
+      centered: true,
+      size: 'lg'
+    });
+    
+    modalRef.componentInstance.modalName = 'Select Country';
+    modalRef.componentInstance.formName = 'Country';
+    
+    modalRef.result.then((selectedRow) => {
+      if (selectedRow) {
+        // ✅ Get the country ID and Name
+        const countryId = selectedRow.countryId || selectedRow.CountryId || selectedRow.recordId;
+        const countryName = selectedRow.countryName || selectedRow.CountryName || '';
+        this.provinceForm.patchValue({
+          countryId: countryId
+        });
+        this.selectedCountryName = countryName;
+        delete this.fieldErrors['countryId'];
+        this.provinceForm.get('countryId')?.markAsTouched();
+        this.cdr.detectChanges();
+        this.provinceForm.updateValueAndValidity();
+      }
+    }).catch(() => {
+      // Modal dismissed
+    });
   }
 
   async onSave(): Promise<void> {
@@ -160,9 +211,12 @@ export class ErpProvinceComponent implements OnInit {
   onReset(): void {
     this.submitted = false;
     this.fieldErrors = {};
+    this.selectedCountryName = '';
     this.provinceForm.reset({ provinceId: 0, isActive: true });
     this.isEditMode = false;
     this.markAllFieldsPristine();
+    // ✅ Trigger change detection
+    this.cdr.detectChanges();
   }
 
   onBack(): void {
@@ -203,29 +257,6 @@ export class ErpProvinceComponent implements OnInit {
       c?.markAsUntouched();
     });
   }
-openCountryModal() {
-  const modalRef = this.modalService.open(LovModalComponent, {
-    backdrop: 'static',
-    keyboard: true,
-    centered: true,
-    size: 'lg'
-  });
-  
-  modalRef.componentInstance.modalName = 'Select Country';
-  modalRef.componentInstance.formName = 'Country';
-  modalRef.componentInstance.selectedValue = this.provinceForm.get('countryId');
-  
-  modalRef.result.then((selectedRow) => {
-    if (selectedRow) {
-      console.log('Selected:', selectedRow);
-      this.provinceForm.patchValue({
-        countryId: selectedRow.countryId || selectedRow.CountryId,
-        countryName: selectedRow.countryName || selectedRow.CountryName
-      });
-    }
-  }).catch(() => {
-    // Modal dismissed
-  });
-}
+
   get f() { return this.provinceForm.controls; }
 }
