@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, signal, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -48,7 +48,8 @@ export class ErpList implements OnInit, OnDestroy {
     private gridService: GridService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private cdr :ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -134,6 +135,7 @@ export class ErpList implements OnInit, OnDestroy {
         this.totalRecords = this.table2.length;
         this.pageNumber = 1;
 this.applyPagination();
+this.cdr.detectChanges()
       },
       
         

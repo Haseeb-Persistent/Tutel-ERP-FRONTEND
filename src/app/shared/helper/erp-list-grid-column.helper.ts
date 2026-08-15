@@ -2,22 +2,23 @@
 export function filterGridColumns(columns: string[]): string[] {
   if (!columns || columns.length === 0) return [];
 
-  const lowerKeysToHide = [
+ const lowerKeysToHide = [
     'recordid',
     'id',
     'rowid',
     'createddate',
     'created_on',
-    'cityId',
-    'areaId',
+    'updated_by',
+    'updated_on',
     'maker',
     'maker_date',
     'authorizer',
     'authorizer_date',
-    'isActive ',
+    'rcstatus',
     'countryid',
     'provinceid',
-    'cityId '
+    'cityid',
+    'areaid'
   ];
 
   return columns.filter((key) => {
