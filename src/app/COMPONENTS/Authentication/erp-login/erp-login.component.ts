@@ -1,5 +1,5 @@
 // erp-login.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -22,11 +22,15 @@ export class ErpLoginComponent implements OnInit {
   // Track field errors from backend
   fieldErrors: { [key: string]: string[] } = {};
 
+  // ✅ Track previous values to prevent false clears
+  private previousValues: { [key: string]: string } = {};
+
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef // ✅ Inject ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -34,7 +38,7 @@ export class ErpLoginComponent implements OnInit {
       username: ['', [Validators.required]],
       password: ['', [Validators.required]]
     });
-    // this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+
     // Redirect if already logged in
     if (this.authService.isLoggedIn()) {
       this.router.navigate([this.returnUrl]);
@@ -44,9 +48,10 @@ export class ErpLoginComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     
-    // Clear previous backend errors
+    // Clear previous errors
     this.fieldErrors = {};
     this.errorMessage = '';
+    this.previousValues = {};
 
     // Check if form is invalid (frontend validation)
     if (this.loginForm.invalid) {
@@ -54,6 +59,7 @@ export class ErpLoginComponent implements OnInit {
         const control = this.loginForm.get(key);
         control?.markAsTouched();
       });
+      this.cdr.detectChanges(); // ✅ Force immediate UI update
       return;
     }
 
@@ -67,18 +73,18 @@ export class ErpLoginComponent implements OnInit {
         if (response.responseCode === 0) {
           this.router.navigate([this.returnUrl]);
         } else {
-          // Show backend error message
           this.errorMessage = response.message || 'Login failed';
+          this.cdr.detectChanges(); // ✅ Force UI update
         }
       },
       error: (error) => {
         this.isLoading = false;
         console.error('Full error object:', error);
-        console.error('Error status:', error.status);
-        console.error('Error error property:', error.error);
         
+        // ✅ Always force UI update on error
+        this.cdr.detectChanges();
+
         if (error.status === 401) {
-          // Get error message
           let errorMsg = 'Invalid username or password';
           if (error.error && error.error.message) {
             errorMsg = error.error.message;
@@ -86,7 +92,6 @@ export class ErpLoginComponent implements OnInit {
             errorMsg = error.error;
           }
           
-          // Show error in field border like validation
           this.fieldErrors = {
             username: [errorMsg],
             password: [errorMsg]
@@ -97,22 +102,21 @@ export class ErpLoginComponent implements OnInit {
             this.loginForm.get(key)?.markAsTouched();
           });
           
-          // Also show in alert
           this.errorMessage = errorMsg;
+          this.cdr.detectChanges(); // ✅ Force UI update
         } 
         else if (error.status === 400 && error.error?.errors) {
           this.fieldErrors = error.error.errors;
           this.errorMessage = error.error.message || 'Validation failed';
           
-          // Mark fields with errors as touched
           Object.keys(this.fieldErrors).forEach(key => {
             const control = this.loginForm.get(key.toLowerCase());
             if (control) {
               control.markAsTouched();
             }
           });
+          this.cdr.detectChanges(); // ✅ Force UI update
         } 
-        // Handle other errors
         else {
           if (error.error && error.error.message) {
             this.errorMessage = error.error.message;
@@ -121,6 +125,7 @@ export class ErpLoginComponent implements OnInit {
           } else {
             this.errorMessage = 'Login failed. Please try again.';
           }
+          this.cdr.detectChanges(); // ✅ Force UI update
         }
       }
     });
@@ -136,18 +141,36 @@ export class ErpLoginComponent implements OnInit {
     return this.fieldErrors[fieldName] || [];
   }
 
+  // ✅ BLUR: Forces the touched state immediately
+  onFieldBlur(fieldName: string): void {
+    const control = this.loginForm.get(fieldName);
+    if (control) {
+      control.markAsTouched();
+      this.cdr.detectChanges(); // ✅ Force UI update
+    }
+  }
+
+  // ✅ CHANGE: Only clears errors if value actually changed
   onFieldChange(fieldName: string): void {
     const control = this.loginForm.get(fieldName);
-    const currentValue = control?.value;
-    
-    if (currentValue && currentValue.trim() !== '') {
-      if (this.fieldErrors[fieldName]) {
-        delete this.fieldErrors[fieldName];
+    const currentValue = control?.value?.trim() || '';
+
+    // Only clear errors if the user has actually typed a new character
+    if (this.previousValues[fieldName] !== currentValue) {
+      this.previousValues[fieldName] = currentValue;
+
+      // Clear the specific field error if the user has typed something
+      if (currentValue !== '') {
+        if (this.fieldErrors[fieldName]) {
+          delete this.fieldErrors[fieldName];
+          this.cdr.detectChanges(); // ✅ Force UI update
+        }
       }
-      
-      if (this.loginForm.valid) {
-        this.errorMessage = '';
-      }
+    }
+
+    // Clear the global message if the whole form becomes valid
+    if (this.loginForm.valid) {
+      this.errorMessage = '';
     }
   }
 

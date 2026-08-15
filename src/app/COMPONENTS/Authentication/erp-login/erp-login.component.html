@@ -7,6 +7,7 @@
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+      
       <!-- Username Field -->
       <div class="form-group">
         <label class="form-label" for="username">Username</label>
@@ -17,6 +18,7 @@
             class="form-control"
             formControlName="username"
             (input)="onFieldChange('username')"
+            (blur)="onFieldBlur('username')"
             [class.is-invalid]="(f['username'].invalid && (f['username'].touched || submitted)) || hasFieldError('username')"
             [class.is-valid]="f['username'].valid && (f['username'].touched || submitted) && !hasFieldError('username')"
             placeholder="Enter your username">
@@ -45,6 +47,7 @@
             class="form-control"
             formControlName="password"
             (input)="onFieldChange('password')"
+            (blur)="onFieldBlur('password')"
             [class.is-invalid]="(f['password'].invalid && (f['password'].touched || submitted)) || hasFieldError('password')"
             [class.is-valid]="f['password'].valid && (f['password'].touched || submitted) && !hasFieldError('password')"
             placeholder="Enter your password">
