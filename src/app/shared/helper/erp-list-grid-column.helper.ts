@@ -8,16 +8,16 @@ export function filterGridColumns(columns: string[]): string[] {
     'rowid',
     'createddate',
     'created_on',
-    'updated_by',
-    'updated_on',
+    'cityId',
+    'areaId',
     'maker',
     'maker_date',
     'authorizer',
     'authorizer_date',
-    'cityId',
     'isActive ',
     'countryid',
-    'provinceid'
+    'provinceid',
+    'cityId '
   ];
 
   return columns.filter((key) => {

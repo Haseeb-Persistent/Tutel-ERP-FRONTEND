@@ -1,24 +1,24 @@
 
 export function filterGridColumnsModal(columns: string[]): string[] {
   if (!columns || columns.length === 0) return [];
-
   const lowerKeysToHide = [
     'recordid',
     'id',
     'rowid',
     'createddate',
     'created_on',
-    'updated_by',
-    'updated_on',
+    'cityId',
+    'areaId',
     'maker',
     'maker_date',
     'authorizer',
     'authorizer_date',
-    'cityId',
     'isActive ',
     'countryid',
-    'provinceid'
+    'provinceid',
+    'cityId '
   ];
+
 
   return columns.filter((key) => {
     const lowerKey = key.toLowerCase();
