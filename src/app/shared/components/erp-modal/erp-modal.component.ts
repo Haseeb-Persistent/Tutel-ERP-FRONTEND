@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { GridService } from '../../../core/services/grid.service';
 import { DialogService } from '../../../core/services/DialogService';
 import { PaginationComponent } from '../pagination/pagination.component';
+import { filterGridColumnsModal } from '../../helper/modal-grid-columns.helper';
 
 @Component({
   selector: 'app-lov-modal',
@@ -47,75 +48,56 @@ export class LovModalComponent {
     this.loadData();
   }
 
-  loadData() {
-    this.isLoading = true;
-    this.gridService.getGridData(this.formName).subscribe({
-      next: (res: any) => {
-        this.isLoading = false;
-        let data = res;
-        if (res && res.data) {
-          data = res.data;
-        } else if (res && res.Table) {
-          data = res.Table;
-        } else if (Array.isArray(res)) {
-          data = res;
-        } else {
-          data = [];
-        }
+loadData() {
+  this.isLoading = true;
+  this.gridService.getGridData(this.formName).subscribe({
+    next: (res: any) => {
+      this.isLoading = false;
+      let data = res;
+      if (res && res.data) {
+        data = res.data;
+      } else if (res && res.Table) {
+        data = res.Table;
+      } else if (Array.isArray(res)) {
+        data = res;
+      } else {
+        data = [];
+      }
 
-        if (!data || !Array.isArray(data) || data.length === 0) {
-          this.allData = [];
-          this.gridRows = [];
-          this.currentPageData = [];
-          this.totalRecords = 0;
-          this.gridHeaders = [];
-          this.cdr.detectChanges();
-          return;
-        }
-
-        this.allData = data;
-        this.gridRows = data;
-        this.totalRecords = data.length;
-        
-        if (data.length > 0) {
-          const allKeys = Object.keys(data[0]);
-          const filteredKeys = allKeys.filter(key => {
-            const lowerKey = key.toLowerCase();
-            if (lowerKey === 'recordid' || 
-                lowerKey === 'id' || 
-                lowerKey === 'rowid' || 
-                lowerKey === 'createddate' || 
-                lowerKey === 'created_on' || 
-                lowerKey === 'updated_by' || 
-                lowerKey === 'updated_on' ||
-                lowerKey === 'maker' ||
-                lowerKey === 'maker_date' ||
-                lowerKey === 'authorizer' ||
-                lowerKey === 'authorizer_date' ||
-                lowerKey === 'rcstatus') {
-              return false;
-            }
-            return true;
-          });
-          this.gridHeaders = filteredKeys;
-        }
-
-        this.applyPagination();
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.isLoading = false;
-        const msg = err?.error?.message || 'Error loading data';
-        this.dialogService.alertBox(msg);
+      if (!data || !Array.isArray(data) || data.length === 0) {
         this.allData = [];
         this.gridRows = [];
         this.currentPageData = [];
         this.totalRecords = 0;
         this.gridHeaders = [];
         this.cdr.detectChanges();
+        return;
       }
-    });
-  }
+
+      this.allData = data;
+      this.gridRows = data;
+      this.totalRecords = data.length;
+     if (data.length > 0) {
+  const allKeys = Object.keys(data[0]);
+  const filteredKeys = filterGridColumnsModal(allKeys);
+  this.gridHeaders = filteredKeys;
+}
+      this.applyPagination();
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      this.isLoading = false;
+      const msg = err?.error?.message || 'Error loading data';
+      this.dialogService.alertBox(msg);
+      this.allData = [];
+      this.gridRows = [];
+      this.currentPageData = [];
+      this.totalRecords = 0;
+      this.gridHeaders = [];
+      this.cdr.detectChanges();
+    }
+  });
+}
 
   onSearch() {
     const keyword = this.searchKeyword?.trim().toLowerCase() || '';
@@ -167,7 +149,6 @@ export class LovModalComponent {
       return 0;
     });
     
-    // ✅ Re-apply pagination after sort
     this.applyPagination();
   }
 

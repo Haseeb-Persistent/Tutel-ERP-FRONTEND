@@ -12,24 +12,24 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LovModalComponent } from '../../../shared/components/erp-modal/erp-modal.component';
 
 @Component({
-  selector: 'app-erp-province',
+  selector: 'app-erp-area',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, CrudButton, RouterModule, LimitInputDirective],
-  templateUrl: './erp-province.component.html',
+  templateUrl: './erp-area.component.html',
 })
-export class ErpProvinceComponent implements OnInit {
-  provinceForm!: FormGroup;
+export class ErpAreaComponent implements OnInit {
+  areaForm!: FormGroup;
   submitted = false;
   formId = '';
-  headerTitle = 'Province Setup';
+  headerTitle = 'Area Setup';
   rowId = '';
   isEditMode = false;
   isLoading = false;
   isSaving = false;
   fieldErrors: { [key: string]: string[] } = {};
-  countryList: any[] = [];
-  selectedCountryName: string = '';
-  
+  cityList: any[] = [];
+  selectedCityName: string = '';
+
   statusOptions = [
     { value: true, label: 'Active' },
     { value: false, label: 'Inactive' }
@@ -42,15 +42,15 @@ export class ErpProvinceComponent implements OnInit {
     private dialog: DialogService,
     private gridService: GridService,
     private modalService: NgbModal,
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.loadCountries();
+    this.loadCities();
     this._activatedRoute.queryParams.subscribe(params => {
-      this.formId = params['f'] || 'Province';
-      this.headerTitle = params['formTitle'] || 'Province Setup';
+      this.formId = params['f'] || 'Area';
+      this.headerTitle = params['formTitle'] || 'Area Setup';
       this.rowId = params['id'] || '';
       this.isEditMode = !!this.rowId;
       this.isEditMode ? this.loadForEdit(this.rowId) : this.onReset();
@@ -58,20 +58,20 @@ export class ErpProvinceComponent implements OnInit {
   }
 
   initForm(): void {
-    this.provinceForm = this._fb.group({
-      provinceId: [0],
-      countryId: ['', Validators.required],
-      provinceCode: ['', [Validators.required, Validators.minLength(2)]],
-      provinceName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+    this.areaForm = this._fb.group({
+      areaId: [0],
+      cityId: ['', Validators.required],
+      areaName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      postalCode: ['', [Validators.maxLength(20)]],
       isActive: [true, Validators.required],
     });
   }
 
-  loadCountries() {
-    this.gridService.getGridData('Country').subscribe({
+  loadCities() {
+    this.gridService.getGridData('City').subscribe({
       next: (res: any) => {
         if (Array.isArray(res)) {
-          this.countryList = res;
+          this.cityList = res;
         }
       },
       error: () => {}
@@ -85,16 +85,16 @@ export class ErpProvinceComponent implements OnInit {
       .subscribe({
         next: (data) => {
           if (data) {
-            const countryId = data['CountryId'] || data['countryId'] || data['countryid'] || 0;
-            const countryName = data['CountryName'] || data['countryName'] || data['countryname'] || '';
-            
-            this.provinceForm.patchValue({
-              countryId: countryId,
-              provinceName: data['ProvinceName'] || data['provinceName'] || '',
-              provinceCode: data['ProvinceCode'] || data['provinceCode'] || '',
-              isActive: data['IsActive'] ?? data['isActive'] ?? true
+            const cityId = data['CityId'] || data['cityId'] || data['cityid'] || 0;
+            const cityName = data['CityName'] || data['cityName'] || data['cityname'] || '';
+
+            this.areaForm.patchValue({
+              cityId: cityId,
+              areaName: data['AreaName'] || data['areaName'] || '',
+              postalCode: data['PostalCode'] || data['postalCode'] || '',
+              isActive: data['IsActive'] ?? data['isActive'] ?? true,
             });
-            this.selectedCountryName = countryName;
+            this.selectedCityName = cityName;
             this.cdr.detectChanges();
           }
         },
@@ -103,72 +103,79 @@ export class ErpProvinceComponent implements OnInit {
   }
 
   onFieldChange(fieldName: string): void {
-    if (this.provinceForm.get(fieldName)?.value?.toString().trim()) {
+    if (this.areaForm.get(fieldName)?.value?.toString().trim()) {
       delete this.fieldErrors[fieldName];
     }
   }
 
-  openCountryModal() {
+  openCityModal() {
     const modalRef = this.modalService.open(LovModalComponent, {
       backdrop: 'static',
       keyboard: true,
       centered: true,
-      size: 'lg'
+      size: 'lg',
     });
-    
-    modalRef.componentInstance.modalName = 'Select Country';
-    modalRef.componentInstance.formName = 'Country';
-    
-    modalRef.result.then((selectedRow) => {
-      if (selectedRow) {
-        const countryId = Number(selectedRow.countryId || selectedRow.CountryId || selectedRow.recordId);
-        const countryName = selectedRow.countryName || selectedRow.CountryName || '';
-        
-        if (!countryId || isNaN(countryId) || countryId <= 0) {
-          this.dialog.alertBox('Invalid Country selected.');
-          return;
+
+    modalRef.componentInstance.modalName = 'Select City';
+    modalRef.componentInstance.formName = 'City';
+
+    modalRef.result
+      .then((selectedRow) => {
+        if (selectedRow) {
+          const cityId = Number(
+            selectedRow.cityId || selectedRow.CityId || selectedRow.recordId
+          );
+          const cityName =
+            selectedRow.cityName || selectedRow.CityName || '';
+
+          if (!cityId || isNaN(cityId) || cityId <= 0) {
+            this.dialog.alertBox('Invalid City selected.');
+            return;
+          }
+
+          this.areaForm.patchValue({
+            cityId: cityId,
+          });
+          this.selectedCityName = cityName;
+          delete this.fieldErrors['cityId'];
+          this.areaForm.get('cityId')?.markAsTouched();
+          this.cdr.detectChanges();
+          this.areaForm.updateValueAndValidity();
         }
-
-        this.provinceForm.patchValue({
-          countryId: countryId
-        });
-        this.selectedCountryName = countryName;
-        delete this.fieldErrors['countryId'];
-        this.provinceForm.get('countryId')?.markAsTouched();
-        this.cdr.detectChanges();
-        this.provinceForm.updateValueAndValidity();
-      }
-    }).catch(() => {});
+      })
+      .catch(() => {});
   }
 
-private preparePayload(): any | null {
-  const formValue = this.provinceForm.value;
-  const countryId = Number(formValue.countryId);
+  private preparePayload(): any | null {
+    const formValue = this.areaForm.value;
+    const cityId = Number(formValue.cityId);
 
-  if (!countryId || isNaN(countryId) || countryId <= 0) {
-    this.dialog.alertBox('Please select a valid Country.');
-    this.provinceForm.get('countryId')?.markAsTouched();
-    return null;
+    if (!cityId || isNaN(cityId) || cityId <= 0) {
+      this.dialog.alertBox('Please select a valid City.');
+      this.areaForm.get('cityId')?.markAsTouched();
+      return null;
+    }
+
+    return {
+      formId: this.formId,
+      data: {
+        cityId: cityId,
+        areaName: formValue.areaName,
+        postalCode: formValue.postalCode,
+        isActive: formValue.isActive,
+      },
+      recordId: this.isEditMode ? this.rowId : null,
+    };
   }
 
-  return {
-    formId: this.formId,
-    data: {
-      countryId: countryId,
-      provinceCode: formValue.provinceCode,
-      provinceName: formValue.provinceName,
-      isActive: formValue.isActive
-    },
-    recordId: this.isEditMode ? this.rowId : null
-  };
-}
   private async submitRecord(): Promise<void> {
-    if (this.isSaving || this.provinceForm.invalid) {
-      if (this.provinceForm.invalid) this.markAllFieldsTouched();
+    if (this.isSaving || this.areaForm.invalid) {
+      if (this.areaForm.invalid) this.markAllFieldsTouched();
       return;
     }
+
     const payload = this.preparePayload();
-    if (!payload) return; // Validation failed, stop here.
+    if (!payload) return;
 
     this.submitted = true;
     this.fieldErrors = {};
@@ -178,10 +185,13 @@ private preparePayload(): any | null {
       let res: any;
 
       if (this.isEditMode) {
-        payload.recordId = this.rowId;
-        res = await firstValueFrom(this.gridService.updateRecord(this.formId, payload));
+        res = await firstValueFrom(
+          this.gridService.updateRecord(this.formId, payload)
+        );
       } else {
-        res = await firstValueFrom(this.gridService.insertRecord(this.formId, payload));
+        res = await firstValueFrom(
+          this.gridService.insertRecord(this.formId, payload)
+        );
       }
 
       this.isSaving = false;
@@ -194,7 +204,9 @@ private preparePayload(): any | null {
       this.isSaving = false;
       if (error.status === 400 && error.error?.errors) {
         this.fieldErrors = error.error.errors;
-        Object.keys(this.fieldErrors).forEach(key => this.provinceForm.get(key)?.markAsTouched());
+        Object.keys(this.fieldErrors).forEach((key) =>
+          this.areaForm.get(key)?.markAsTouched()
+        );
       } else {
         const msg = error?.error?.message || error?.message;
         if (msg) await this.dialog.alertBox(msg);
@@ -213,25 +225,30 @@ private preparePayload(): any | null {
   onReset(): void {
     this.submitted = false;
     this.fieldErrors = {};
-    this.selectedCountryName = '';
-    this.provinceForm.reset({ provinceId: 0, isActive: true });
+    this.selectedCityName = '';
+    this.areaForm.reset({ areaId: 0, isActive: true });
     this.isEditMode = false;
     this.markAllFieldsPristine();
     this.cdr.detectChanges();
   }
 
   onBack(): void {
-    this._router.navigate([`/app/ErpList/${this.formId}`], { queryParams: { formTitle: this.headerTitle } });
+    this._router.navigate([`/app/ErpList/${this.formId}`], {
+      queryParams: { formTitle: this.headerTitle },
+    });
   }
 
   isFieldInvalid(fieldName: string): boolean {
-    const c = this.provinceForm.get(fieldName);
-    return !!(c?.invalid && (c.dirty || c.touched || this.submitted)) || this.hasFieldError(fieldName);
+    const c = this.areaForm.get(fieldName);
+    return (
+      !!(c?.invalid && (c.dirty || c.touched || this.submitted)) ||
+      this.hasFieldError(fieldName)
+    );
   }
 
   getFieldError(fieldName: string): string {
     if (this.hasFieldError(fieldName)) return this.fieldErrors[fieldName][0];
-    const e = this.provinceForm.get(fieldName)?.errors;
+    const e = this.areaForm.get(fieldName)?.errors;
     if (!e) return '';
     if (e['required']) return 'This field is required';
     if (e['minlength']) return `Minimum ${e['minlength'].requiredLength} characters`;
@@ -248,16 +265,20 @@ private preparePayload(): any | null {
   }
 
   private markAllFieldsTouched(): void {
-    Object.keys(this.provinceForm.controls).forEach(key => this.provinceForm.get(key)?.markAsTouched());
+    Object.keys(this.areaForm.controls).forEach((key) =>
+      this.areaForm.get(key)?.markAsTouched()
+    );
   }
 
   private markAllFieldsPristine(): void {
-    Object.keys(this.provinceForm.controls).forEach(key => {
-      const c = this.provinceForm.get(key);
+    Object.keys(this.areaForm.controls).forEach((key) => {
+      const c = this.areaForm.get(key);
       c?.markAsPristine();
       c?.markAsUntouched();
     });
   }
 
-  get f() { return this.provinceForm.controls; }
+  get f() {
+    return this.areaForm.controls;
+  }
 }

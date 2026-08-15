@@ -1,0 +1,27 @@
+
+export function filterGridColumns(columns: string[]): string[] {
+  if (!columns || columns.length === 0) return [];
+
+  const lowerKeysToHide = [
+    'recordid',
+    'id',
+    'rowid',
+    'createddate',
+    'created_on',
+    'updated_by',
+    'updated_on',
+    'maker',
+    'maker_date',
+    'authorizer',
+    'authorizer_date',
+    'cityId',
+    'isActive ',
+    'countryid',
+    'provinceid'
+  ];
+
+  return columns.filter((key) => {
+    const lowerKey = key.toLowerCase();
+    return !lowerKeysToHide.includes(lowerKey);
+  });
+}

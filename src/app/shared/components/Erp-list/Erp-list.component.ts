@@ -6,6 +6,7 @@ import { DialogService } from '../../../core/services/DialogService';
 import { GridService } from '../../../core/services/grid.service';
 import { PaginationComponent } from '../pagination/pagination.component';
 import { NgxUiLoaderModule } from "ngx-ui-loader";
+import { filterGridColumns } from '../../helper/erp-list-grid-column.helper';
 
 @Component({
   selector: 'app-erp-list',
@@ -39,9 +40,8 @@ export class ErpList implements OnInit, OnDestroy {
 
   private paramSubscription: any;
   private querySubscription: any;
-
-  // ✅ Store recordId mapping for row clicks
   private recordIdMap: Map<number, any> = new Map();
+  gridRows: any;
 
 
   constructor(
@@ -55,8 +55,9 @@ export class ErpList implements OnInit, OnDestroy {
     this.paramSubscription = this.activatedRoute.paramMap.subscribe((params) => {
       this.formName = params.get('formName') || 'Dashboard';
       this.formId = this.formName;
-      this.loadPageData();
-      this.clearSearch()
+      this.clearData();
+    this.loadPageData();
+    this.clearSearch();
     });
 
     this.querySubscription = this.activatedRoute.queryParams.subscribe((params) => {
@@ -74,6 +75,7 @@ export class ErpList implements OnInit, OnDestroy {
 
   loadPageData() {
     this.isLoading = true;
+      this.clearData();
     this.table2 = [];
     this.allData = [];
     this.gridColumns.set([]);
@@ -115,47 +117,23 @@ export class ErpList implements OnInit, OnDestroy {
         const allRows = data;
         this.allData = allRows;
 
-        if (allRows.length > 0) {
-          const allKeys = Object.keys(allRows[0]);
-          
-          // ✅ Filter out system columns AND RecordId
-          const filteredKeys = allKeys.filter(key => {
-            const lowerKey = key.toLowerCase();
-            // ✅ Hide RecordId and system columns
-            if (lowerKey === 'recordid' || 
-                lowerKey === 'id' || 
-                lowerKey === 'rowid' || 
-                lowerKey === 'createddate' || 
-                lowerKey === 'created_on' || 
-                lowerKey === 'updated_by' || 
-                lowerKey === 'updated_on' ||
-                lowerKey === 'maker' ||
-                lowerKey === 'maker_date' ||
-                lowerKey === 'authorizer' ||
-                lowerKey === 'authorizer_date' ||
-                lowerKey === 'rcstatus') {
-              return false;
-            }
-            return true;
-          });
-          
-          this.gridColumns.set(filteredKeys);
-          this.gridHeaders.set([...filteredKeys]);
-          
-          // ✅ Store recordId for each row by index
-          allRows.forEach((row, index) => {
-            const recordId = row?.recordId || row?.RecordId || row?.id || row?.RowID || row?.rowid;
-            if (recordId) {
-              this.recordIdMap.set(index, recordId);
-            }
-          });
-        }
+   if (allRows.length > 0) {
+  const allKeys = Object.keys(allRows[0]);
+  const filteredKeys = filterGridColumns(allKeys);
+  this.gridColumns.set(filteredKeys);
+  this.gridHeaders.set([...filteredKeys]);
+  allRows.forEach((row, index) => {
+    const recordId = row?.recordId || row?.RecordId || row?.id || row?.RowID || row?.rowid;
+    if (recordId) {
+      this.recordIdMap.set(index, recordId);
+    }
+  });
+}
 
         this.table2 = allRows;
         this.totalRecords = this.table2.length;
         this.pageNumber = 1;
-// this.applyPagination();
-//         this.cdr.detectChanges();
+this.applyPagination();
       },
       
         
@@ -166,6 +144,7 @@ export class ErpList implements OnInit, OnDestroy {
         this.table2 = [];
         this.allData = [];
         this.totalRecords = 0;
+         this.clearData();
       }
     });
   }
@@ -174,7 +153,17 @@ export class ErpList implements OnInit, OnDestroy {
     if (this.paramSubscription) this.paramSubscription.unsubscribe();
     if (this.querySubscription) this.querySubscription.unsubscribe();
   }
-
+private clearData(): void {
+  this.table2 = [];
+  this.allData = [];
+  this.gridColumns.set([]);
+  this.gridHeaders.set([]);
+  this.totalRecords = 0;
+  this.pageNumber = 1;
+  this.recordIdMap.clear();
+  this.sortColumn = '';
+  this.isAsc = true;
+}
   getCurrentPageData(): any[] {
     const startIndex = (this.pageNumber - 1) * this.pageSize;
     const endIndex = Math.min(startIndex + this.pageSize, this.totalRecords);
@@ -278,7 +267,11 @@ export class ErpList implements OnInit, OnDestroy {
       return 0;
     });
   }
-
+  applyPagination() {
+    const startIndex = (this.pageNumber - 1) * this.pageSize;
+    const endIndex = Math.min(startIndex + this.pageSize, this.gridRows.length);
+    this.getCurrentPageData = this.gridRows.slice(startIndex, endIndex);
+  }
   onPageChange(event: { pageNumber: number; pageSize: number }) {
     this.pageNumber = event.pageNumber;
     this.pageSize = event.pageSize;

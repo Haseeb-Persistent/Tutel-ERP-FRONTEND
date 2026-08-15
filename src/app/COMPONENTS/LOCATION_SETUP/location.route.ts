@@ -10,5 +10,15 @@ export const LocationRoute: Routes = [
     path: 'location/province',
     loadComponent: () => import('./erp-province/erp-province.component')
       .then(m => m.ErpProvinceComponent)
+  },
+    {
+    path: 'location/city',
+    loadComponent: () => import('./erp-city/erp-city.component')
+      .then(m => m.ErpCityComponent)
+  },
+    {
+    path: 'location/area',
+    loadComponent: () => import('./erp-area/erp-area.component')
+      .then(m => m.ErpAreaComponent)
   }
 ];
