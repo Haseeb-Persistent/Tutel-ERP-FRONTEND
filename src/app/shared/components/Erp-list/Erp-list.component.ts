@@ -154,7 +154,11 @@ export class ErpList implements OnInit, OnDestroy {
         this.table2 = allRows;
         this.totalRecords = this.table2.length;
         this.pageNumber = 1;
+// this.applyPagination();
+//         this.cdr.detectChanges();
       },
+      
+        
       error: (err) => {
         this.isLoading = false;
         const Message = err?.error?.message || 'Error loading data';

@@ -20,8 +20,6 @@
 <div class="code-block shadow-sm mt-3">
   <form [formGroup]="provinceForm" (ngSubmit)="onSave()">
     <div class="row g-3">
-      
-      <!-- Country Selection with LOV Modal -->
       <div class="col-lg-6 col-md-6 col-sm-12">
         <label class="form-label">Country <span class="text-danger">*</span></label>
         <div class="input-group">
@@ -44,6 +42,21 @@
       </div>
 
       <!-- Province Name -->
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <label class="form-label">Province Code <span class="text-danger">*</span></label>
+        <input 
+          type="text" 
+          class="form-control" 
+          formControlName="provinceCode"
+          placeholder="Enter Province Code"
+          alphaOnly
+          (input)="onFieldChange('provinceCode')"
+          [class.is-invalid]="isFieldInvalid('provinceCode')"
+          [class.is-valid]="f['provinceCode'].valid && (f['provinceCode'].touched || submitted) && !hasFieldError('provinceCode')">
+        @if (isFieldInvalid('provinceCode')) {
+          <div class="invalid-feedback">{{ getFieldError('provinceCode') }}</div>
+        }
+      </div>
       <div class="col-lg-6 col-md-6 col-sm-12">
         <label class="form-label">Province Name <span class="text-danger">*</span></label>
         <input 
@@ -76,7 +89,6 @@
           <div class="invalid-feedback">{{ getFieldError('isActive') }}</div>
         }
       </div>
-
     </div>
   </form>
 </div>

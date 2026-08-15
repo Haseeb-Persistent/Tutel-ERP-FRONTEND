@@ -42,7 +42,7 @@ export class ErpProvinceComponent implements OnInit {
     private dialog: DialogService,
     private gridService: GridService,
     private modalService: NgbModal,
-    private cdr: ChangeDetectorRef // ✅ Add ChangeDetectorRef
+    private cdr: ChangeDetectorRef 
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +61,7 @@ export class ErpProvinceComponent implements OnInit {
     this.provinceForm = this._fb.group({
       provinceId: [0],
       countryId: ['', Validators.required],
+      provinceCode: ['', [Validators.required, Validators.minLength(2)]],
       provinceName: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       isActive: [true, Validators.required],
     });
@@ -90,11 +91,10 @@ export class ErpProvinceComponent implements OnInit {
             this.provinceForm.patchValue({
               countryId: countryId,
               provinceName: data['ProvinceName'] || data['provinceName'] || '',
+              provinceCode: data['ProvinceCode'] || data['provinceCode'] || '',
               isActive: data['IsActive'] ?? data['isActive'] ?? true
             });
-            
             this.selectedCountryName = countryName;
-            // ✅ Trigger change detection
             this.cdr.detectChanges();
           }
         },
@@ -121,9 +121,14 @@ export class ErpProvinceComponent implements OnInit {
     
     modalRef.result.then((selectedRow) => {
       if (selectedRow) {
-        // ✅ Get the country ID and Name
-        const countryId = selectedRow.countryId || selectedRow.CountryId || selectedRow.recordId;
+        const countryId = Number(selectedRow.countryId || selectedRow.CountryId || selectedRow.recordId);
         const countryName = selectedRow.countryName || selectedRow.CountryName || '';
+        
+        if (!countryId || isNaN(countryId) || countryId <= 0) {
+          this.dialog.alertBox('Invalid Country selected.');
+          return;
+        }
+
         this.provinceForm.patchValue({
           countryId: countryId
         });
@@ -133,79 +138,80 @@ export class ErpProvinceComponent implements OnInit {
         this.cdr.detectChanges();
         this.provinceForm.updateValueAndValidity();
       }
-    }).catch(() => {
-      // Modal dismissed
-    });
+    }).catch(() => {});
+  }
+
+  // ─── STEP 1: PREPARE AND VALIDATE PAYLOAD BEFORE SUBMITTING ──────────
+  private preparePayload(): any | null {
+    const formValue = this.provinceForm.value;
+    const countryId = Number(formValue.countryId);
+
+    // ✅ Check condition right here before constructing payload
+    if (!countryId || isNaN(countryId) || countryId <= 0) {
+      this.dialog.alertBox('Please select a valid Country.');
+      this.provinceForm.get('countryId')?.markAsTouched();
+      return null;
+    }
+
+    // Return valid payload
+    return {
+      formId: this.formId,
+      countryId: countryId,
+      provinceCode: formValue.provinceCode,
+      provinceName: formValue.provinceName,
+      isActive: formValue.isActive
+    };
+  }
+
+  // ─── STEP 2: UNIFIED SUBMIT METHOD ────────────────────────────────────
+  private async submitRecord(): Promise<void> {
+    if (this.isSaving || this.provinceForm.invalid) {
+      if (this.provinceForm.invalid) this.markAllFieldsTouched();
+      return;
+    }
+
+    // ✅ Validate before proceeding
+    const payload = this.preparePayload();
+    if (!payload) return; // Validation failed, stop here.
+
+    this.submitted = true;
+    this.fieldErrors = {};
+    this.isSaving = true;
+
+    try {
+      let res: any;
+
+      if (this.isEditMode) {
+        payload.recordId = this.rowId;
+        res = await firstValueFrom(this.gridService.updateRecord(this.formId, payload));
+      } else {
+        res = await firstValueFrom(this.gridService.insertRecord(this.formId, payload));
+      }
+
+      this.isSaving = false;
+      if (res?.message) await this.dialog.alertBox(res.message);
+      if (!isErrorMessage(res?.message)) {
+        window.history.back();
+        if (this.isEditMode) this.isEditMode = false;
+      }
+    } catch (error: any) {
+      this.isSaving = false;
+      if (error.status === 400 && error.error?.errors) {
+        this.fieldErrors = error.error.errors;
+        Object.keys(this.fieldErrors).forEach(key => this.provinceForm.get(key)?.markAsTouched());
+      } else {
+        const msg = error?.error?.message || error?.message;
+        if (msg) await this.dialog.alertBox(msg);
+      }
+    }
   }
 
   async onSave(): Promise<void> {
-    if (this.isSaving || this.provinceForm.invalid) {
-      if (this.provinceForm.invalid) this.markAllFieldsTouched();
-      return;
-    }
-    this.submitted = true;
-    this.fieldErrors = {};
-    this.isSaving = true;
-
-    try {
-      const res = await firstValueFrom(this.gridService.insertRecord(this.formId, {
-        formId: this.formId,
-        data: {
-          countryId: this.provinceForm.value.countryId,
-          provinceName: this.provinceForm.value.provinceName,
-          isActive: this.provinceForm.value.isActive
-        }
-      }));
-      this.isSaving = false;
-      if (res?.message) await this.dialog.alertBox(res.message);
-      if (!isErrorMessage(res?.message)) window.history.back();
-    } catch (error: any) {
-      this.isSaving = false;
-      if (error.status === 400 && error.error?.errors) {
-        this.fieldErrors = error.error.errors;
-        Object.keys(this.fieldErrors).forEach(key => this.provinceForm.get(key)?.markAsTouched());
-      } else {
-        const msg = error?.error?.message || error?.message;
-        if (msg) await this.dialog.alertBox(msg);
-      }
-    }
+    await this.submitRecord();
   }
 
   async onUpdate(): Promise<void> {
-    if (this.isSaving || this.provinceForm.invalid) {
-      if (this.provinceForm.invalid) this.markAllFieldsTouched();
-      return;
-    }
-    this.submitted = true;
-    this.fieldErrors = {};
-    this.isSaving = true;
-
-    try {
-      const res = await firstValueFrom(this.gridService.updateRecord(this.formId, {
-        formId: this.formId,
-        data: {
-          countryId: this.provinceForm.value.countryId,
-          provinceName: this.provinceForm.value.provinceName,
-          isActive: this.provinceForm.value.isActive
-        },
-        recordId: this.rowId
-      }));
-      if (res?.message) await this.dialog.alertBox(res.message);
-      if (!isErrorMessage(res?.message)) {
-        this.isEditMode = false;
-        window.history.back();
-      }
-    } catch (error: any) {
-      if (error.status === 400 && error.error?.errors) {
-        this.fieldErrors = error.error.errors;
-        Object.keys(this.fieldErrors).forEach(key => this.provinceForm.get(key)?.markAsTouched());
-      } else {
-        const msg = error?.error?.message || error?.message;
-        if (msg) await this.dialog.alertBox(msg);
-      }
-    } finally {
-      this.isSaving = false;
-    }
+    await this.submitRecord();
   }
 
   onReset(): void {
@@ -215,7 +221,6 @@ export class ErpProvinceComponent implements OnInit {
     this.provinceForm.reset({ provinceId: 0, isActive: true });
     this.isEditMode = false;
     this.markAllFieldsPristine();
-    // ✅ Trigger change detection
     this.cdr.detectChanges();
   }
 
